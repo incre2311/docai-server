@@ -9,8 +9,16 @@ from flask_cors import CORS
 print("DOC·AI Server initializing...", flush=True)
 sys.stdout.flush()
 
-app = Flask(__name__)
-CORS(app)
+app = Flask(__name__):
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    return response
+
+CORS(app, origins="*", allow_headers=["Content-Type"], methods=["GET", "POST", "OPTIONS"])
+
 
 WORK_DIR = '/tmp/docai'
 os.makedirs(WORK_DIR, exist_ok=True)
