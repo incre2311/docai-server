@@ -3,7 +3,7 @@ import os
 import uuid
 import subprocess
 import requests
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, Response
 from flask_cors import CORS
 
 print("DOC·AI Server initializing...", flush=True)
@@ -273,6 +273,12 @@ def concat_clips(clip_paths, output_path):
     if result.returncode != 0:
         print("Concat error:", result.stderr.decode()[:300], flush=True)
     return output_path
+    
+@app.route("/", methods=["GET"])
+def index():
+    with open("/app/tool.html", "r") as f:
+        html = f.read()
+    return Response(html, mimetype="text/html")
 
 @app.route('/health', methods=['GET'])
 def health():
