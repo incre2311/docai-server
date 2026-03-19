@@ -349,7 +349,7 @@ function downloadVideo() {
 
 // Script counter
 document.getElementById('scriptInput').addEventListener('input', function() {
-  const count = this.value.split('..').filter(s=>s.trim()).length;
+  const count = this.value.split(/\.\.+/).filter(s=>s.trim()).length;
   document.getElementById('sceneCount').textContent = count + ' scene' + (count!==1?'s':'') + ' detected';
 });
 
