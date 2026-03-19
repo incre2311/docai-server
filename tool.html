@@ -155,15 +155,28 @@ function updateCount() {
 
 document.getElementById('scriptInput').addEventListener('input', updateCount);
 
-function fetchPexels(query, key, dur) {
+function fetchPexels(query, key, dur, attempt) {
+  attempt = attempt || 1;
   return fetch('https://api.pexels.com/videos/search?query=' + encodeURIComponent(query) + '&per_page=3&orientation=landscape', {
     headers: { 'Authorization': key }
   }).then(function(r){ return r.json(); }).then(function(d){
-    if (!d.videos || !d.videos.length) return null;
+    if (!d.videos || !d.videos.length) {
+      if (attempt < 2) {
+        return new Promise(function(res){ setTimeout(res, 1000); })
+          .then(function(){ return fetchPexels(query, key, dur, 2); });
+      }
+      return null;
+    }
     var v = d.videos[0];
     var f = v.video_files && (v.video_files.find(function(x){ return x.quality === 'hd'; }) || v.video_files[0]);
     return { url: f && f.link, source: 'pexels', query: query };
-  }).catch(function(){ return null; });
+  }).catch(function(e){
+    if (attempt < 2) {
+      return new Promise(function(res){ setTimeout(res, 1000); })
+        .then(function(){ return fetchPexels(query, key, dur, 2); });
+    }
+    return null;
+  });
 }
 
 function fetchPixabay(query, key) {
