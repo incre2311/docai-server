@@ -1,0 +1,17 @@
+python3 << 'PYEOF'
+# Modify the HTML to use relative URL for Railway
+with open('/mnt/user-data/outputs/documentary-brain.html', 'r') as f:
+    html = f.read()
+
+# Replace hardcoded Railway URL with relative path
+html = html.replace(
+    "const RAILWAY_URL = 'https://docai-server-production.up.railway.app';",
+    "const RAILWAY_URL = window.location.origin;"
+)
+
+with open('/mnt/user-data/outputs/tool.html', 'w') as f:
+    f.write(html)
+
+print("Done. Size:", len(html))
+print("URL replaced:", "window.location.origin" in html)
+PYEOF
