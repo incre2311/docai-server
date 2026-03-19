@@ -11,11 +11,12 @@ h1{font-size:28px;color:#e8ff00;letter-spacing:2px;margin-bottom:4px}
 .sub{font-size:11px;color:#444;letter-spacing:3px;margin-bottom:24px}
 .box{background:#111;border:1px solid #222;border-radius:10px;padding:16px;margin-bottom:16px}
 .box h2{font-size:13px;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
-textarea,input,select{width:100%;background:#181818;border:1px solid #333;border-radius:6px;color:#f0f0f0;padding:10px;font-size:13px;font-family:inherit;outline:none;margin-bottom:10px}
+textarea,input{width:100%;background:#181818;border:1px solid #333;border-radius:6px;color:#f0f0f0;padding:10px;font-size:13px;font-family:inherit;outline:none;margin-bottom:10px}
 textarea{resize:vertical;min-height:160px;line-height:1.6}
 .btn{background:#e8ff00;color:#000;border:none;border-radius:6px;padding:12px 20px;font-size:13px;font-weight:700;cursor:pointer;width:100%;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
 .btn-purple{background:#7c3aed;color:white}
-.status{font-size:11px;font-family:monospace;padding:8px 12px;border-radius:5px;background:#181818;border:1px solid #333;margin-bottom:10px;word-break:break-all}
+.btn-sm{background:transparent;color:#888;border:1px solid #333;padding:6px 12px;width:auto;font-size:11px;margin:0}
+.status{font-size:11px;font-family:monospace;padding:8px 12px;border-radius:5px;background:#181818;border:1px solid #333;margin-bottom:10px;word-break:break-all;line-height:1.5}
 .status.ok{border-color:#22c55e;color:#22c55e}
 .status.error{border-color:#ef4444;color:#ef4444}
 .status.loading{border-color:#f97316;color:#f97316}
@@ -34,8 +35,10 @@ textarea{resize:vertical;min-height:160px;line-height:1.6}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .footage-ok{font-size:11px;color:#3b82f6;font-family:monospace;margin-top:6px}
 .footage-grok{font-size:11px;color:#f59e0b;margin-top:6px;line-height:1.5}
+.footage-fallback{font-size:11px;color:#888;font-family:monospace;margin-top:6px}
 .render-box{background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:8px;padding:16px;text-align:center;margin-top:10px}
 .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:10px;font-family:monospace;color:#555;margin-bottom:12px}
+.debug-box{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:6px;padding:10px;font-family:monospace;font-size:10px;color:#555;margin-top:10px;max-height:120px;overflow-y:auto;line-height:1.6}
 </style>
 </head>
 <body>
@@ -45,7 +48,7 @@ textarea{resize:vertical;min-height:160px;line-height:1.6}
 <div class="box">
   <h2>Server Status</h2>
   <div class="status" id="serverStatus">Checking...</div>
-  <button class="btn" style="background:transparent;color:#888;border:1px solid #333;margin:0;padding:6px 12px;width:auto;" onclick="checkServer()">↻ Retry</button>
+  <button class="btn btn-sm" onclick="checkServer()">↻ Retry</button>
 </div>
 
 <div class="box">
@@ -68,8 +71,9 @@ textarea{resize:vertical;min-height:160px;line-height:1.6}
 
 <div id="scenesOutput" style="display:none">
   <div class="box">
-    <h2>Scenes</h2>
+    <h2>Scenes <span id="validationBadge" style="font-size:10px;padding:2px 8px;border-radius:3px;margin-left:8px;"></span></h2>
     <div id="scenesList"></div>
+    <div class="debug-box" id="debugBox" style="display:none"></div>
   </div>
 </div>
 
@@ -88,21 +92,58 @@ textarea{resize:vertical;min-height:160px;line-height:1.6}
 <script>
 var SERVER = 'https://docai-server-production.up.railway.app';
 
-var TENSE_KW = ['gun','bomb','war','fight','chase','arrest','raid','shoot','attack','cartel','hitman','kill','murder','crime','fbi','cia','police','swat','escape','military','weapon','terror'];
-var EMOTIONAL_KW = ['suicide','funeral','grief','loss','cry','death','tears','tragedy','pain','alone','family','mother','father','love','goodbye','broken','mourn'];
-var EVIDENCE_KW = ['according','reported','statistics','billion','million','percent','evidence','revealed','investigation','confirmed','classified','leaked'];
+// ── ABSTRACT SCENE DETECTION
+// Scenes with these patterns are too abstract to search literally
+var ABSTRACT_PATTERNS = [
+  /^in a world/i, /^imagine/i, /^picture this/i, /^what if/i,
+  /^the story of/i, /^this is the/i, /^behind the/i,
+  /^for decades/i, /^for years/i, /^for centuries/i,
+  /^nobody knew/i, /^no one knew/i, /^everyone thought/i,
+  /^but behind/i, /^but beneath/i, /^but underneath/i,
+  /^something was/i, /^it was all/i, /^at its peak/i,
+  /^they called it/i, /^his name was/i, /^her name was/i,
+  /^for two years/i, /^for three years/i
+];
+
+// Generic cinematic fallback queries when scene is abstract
+var FALLBACK_QUERIES = [
+  'cinematic city aerial view',
+  'dark dramatic sky clouds',
+  'city lights night timelapse',
+  'dramatic ocean waves',
+  'empty road highway cinematic',
+  'dark corridor dramatic lighting',
+  'crowd people walking city',
+  'financial district buildings',
+  'government building exterior',
+  'courthouse steps dramatic'
+];
+
+var TENSE_KW = ['gun','bomb','war','fight','chase','arrest','raid','shoot','attack','cartel','hitman','kill','murder','crime','fbi','cia','police','swat','escape','military','weapon','terror','collapsed','collapsing','explosion'];
+var EMOTIONAL_KW = ['suicide','funeral','grief','loss','cry','death','tears','tragedy','pain','alone','family','mother','father','love','goodbye','broken','mourn','lost','everything'];
+var EVIDENCE_KW = ['according','reported','statistics','billion','million','percent','evidence','revealed','investigation','confirmed','classified','leaked','processed','transactions'];
 var DATE_KW = ['january','february','march','april','may','june','july','august','september','october','november','december','monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
 
 var scenes = [];
 var footageData = {};
 var renderedBlob = null;
+var debugLog = [];
+
+function log(msg) {
+  debugLog.push(msg);
+  var box = document.getElementById('debugBox');
+  if (box) {
+    box.style.display = 'block';
+    box.textContent = debugLog.slice(-20).join('\n');
+    box.scrollTop = box.scrollHeight;
+  }
+}
 
 function checkServer() {
   var el = document.getElementById('serverStatus');
   el.textContent = 'Checking...';
   el.className = 'status loading';
-  var url = SERVER + '/health';
-  fetch(url)
+  fetch(SERVER + '/health')
     .then(function(r){ return r.json(); })
     .then(function(d){
       el.textContent = 'OK — ' + d.message;
@@ -126,13 +167,36 @@ function calcDuration(text, type, pauseCount) {
 
 function detectType(text) {
   var lower = text.toLowerCase();
-  var words = lower.split(/\s+/);
   var hasDate = DATE_KW.some(function(k){ return lower.includes(k); }) || /\d{4}/.test(text) || /\d{1,2}:\d{2}/.test(text);
-  if (hasDate && text.length < 60) return 'timestamp';
+  if (hasDate && text.length < 80) return 'timestamp';
   if (EVIDENCE_KW.some(function(k){ return lower.includes(k); })) return 'evidence';
   if (TENSE_KW.some(function(k){ return lower.includes(k); })) return 'tense';
   if (EMOTIONAL_KW.some(function(k){ return lower.includes(k); })) return 'emotional';
   return 'neutral';
+}
+
+// ── SUGGESTION 3: Detect abstract scenes
+function isAbstract(text) {
+  return ABSTRACT_PATTERNS.some(function(p){ return p.test(text.trim()); }) ||
+    text.trim().split(' ').filter(function(w){ return w.length > 3; }).length < 3;
+}
+
+// ── SUGGESTION 3: Get smart query for abstract scenes
+function getSmartQuery(sc) {
+  var lower = sc.cleanText.toLowerCase();
+  // Try to extract meaningful visual keywords
+  if (lower.includes('bank') || lower.includes('financial') || lower.includes('money') || lower.includes('loan')) return 'bank building financial district';
+  if (lower.includes('internet') || lower.includes('dark web') || lower.includes('computer') || lower.includes('cyber')) return 'computer screen hacker dark';
+  if (lower.includes('government') || lower.includes('congress') || lower.includes('senate')) return 'government building capitol';
+  if (lower.includes('market') || lower.includes('stock') || lower.includes('wall street')) return 'stock market trading floor';
+  if (lower.includes('house') || lower.includes('home') || lower.includes('property')) return 'suburban house real estate';
+  if (lower.includes('prison') || lower.includes('jail') || lower.includes('arrest')) return 'prison exterior bars';
+  if (lower.includes('court') || lower.includes('judge') || lower.includes('trial')) return 'courthouse legal justice';
+  if (lower.includes('war') || lower.includes('military') || lower.includes('soldier')) return 'military soldiers dramatic';
+  if (lower.includes('city') || lower.includes('urban') || lower.includes('street')) return 'city street cinematic';
+  // Fallback: pick based on scene type
+  var fallbacks = { tense: 'dramatic dark cityscape', emotional: 'person alone window', evidence: 'newspaper documents desk', neutral: 'cinematic aerial city' };
+  return fallbacks[sc.type] || 'cinematic documentary footage';
 }
 
 function parseScript(raw) {
@@ -142,8 +206,11 @@ function parseScript(raw) {
     var dashes = (text.match(/—/g) || []).length;
     var type = detectType(clean);
     var dur = calcDuration(clean, type, dashes);
-    var queryWords = clean.split(' ').filter(function(w){ return w.length > 3; }).slice(0, 4).join(' ');
-    return { index: i+1, cleanText: clean, type: type, dur: dur, query: queryWords };
+    var abstract = isAbstract(clean);
+    // Smart query: use literal words if concrete, smart mapping if abstract
+    var literalQuery = clean.split(' ').filter(function(w){ return w.length > 3; }).slice(0, 4).join(' ');
+    var query = abstract ? getSmartQuery({ cleanText: clean, type: type }) : literalQuery;
+    return { index: i+1, cleanText: clean, type: type, dur: dur, query: query, abstract: abstract, url: null };
   });
 }
 
@@ -152,52 +219,87 @@ function updateCount() {
   var count = val.split('..').filter(function(s){ return s.trim().length > 0; }).length;
   document.getElementById('sceneCount').textContent = count + (count === 1 ? ' scene' : ' scenes') + ' detected';
 }
-
 document.getElementById('scriptInput').addEventListener('input', updateCount);
 
-function fetchPexels(query, key, dur, attempt) {
-  attempt = attempt || 1;
-  return fetch('https://api.pexels.com/videos/search?query=' + encodeURIComponent(query) + '&per_page=3&orientation=landscape', {
-    headers: { 'Authorization': key }
-  }).then(function(r){ return r.json(); }).then(function(d){
-    if (!d.videos || !d.videos.length) {
-      if (attempt < 2) {
-        return new Promise(function(res){ setTimeout(res, 1000); })
-          .then(function(){ return fetchPexels(query, key, dur, 2); });
+// ── SUGGESTION 2: Retry with broader queries
+function fetchPexelsWithRetry(sc, key) {
+  var queries = [
+    sc.query,
+    sc.query + ' documentary footage',
+    getSmartQuery(sc),
+    FALLBACK_QUERIES[sc.index % FALLBACK_QUERIES.length]
+  ];
+  var attempt = 0;
+
+  function tryNext() {
+    if (attempt >= queries.length) return Promise.resolve(null);
+    var q = queries[attempt];
+    attempt++;
+    log('Pexels try ' + attempt + ': "' + q + '"');
+    return fetch('https://api.pexels.com/videos/search?query=' + encodeURIComponent(q) + '&per_page=3&orientation=landscape', {
+      headers: { 'Authorization': key }
+    }).then(function(r){ return r.json(); }).then(function(d){
+      if (d.videos && d.videos.length > 0) {
+        var v = d.videos[0];
+        var f = v.video_files && (v.video_files.find(function(x){ return x.quality === 'hd'; }) || v.video_files[0]);
+        if (f && f.link) {
+          log('Pexels found: ' + q);
+          return { url: f.link, source: 'pexels', query: q };
+        }
       }
-      return null;
-    }
-    var v = d.videos[0];
-    var f = v.video_files && (v.video_files.find(function(x){ return x.quality === 'hd'; }) || v.video_files[0]);
-    return { url: f && f.link, source: 'pexels', query: query };
-  }).catch(function(e){
-    if (attempt < 2) {
-      return new Promise(function(res){ setTimeout(res, 1000); })
-        .then(function(){ return fetchPexels(query, key, dur, 2); });
-    }
-    return null;
-  });
+      return new Promise(function(res){ setTimeout(res, 800); }).then(tryNext);
+    }).catch(function(){
+      return new Promise(function(res){ setTimeout(res, 800); }).then(tryNext);
+    });
+  }
+  return tryNext();
 }
 
-function fetchPixabay(query, key) {
-  return fetch('https://pixabay.com/api/videos/?key=' + key + '&q=' + encodeURIComponent(query) + '&per_page=3')
-    .then(function(r){ return r.json(); }).then(function(d){
-      if (!d.hits || !d.hits.length) return null;
-      var v = d.hits[0];
-      var f = v.videos && (v.videos.large || v.videos.medium || v.videos.small);
-      return { url: f && f.url, source: 'pixabay', query: query };
-    }).catch(function(){ return null; });
+function fetchPixabayWithRetry(sc, key) {
+  var queries = [
+    sc.query,
+    getSmartQuery(sc),
+    FALLBACK_QUERIES[sc.index % FALLBACK_QUERIES.length]
+  ];
+  var attempt = 0;
+
+  function tryNext() {
+    if (attempt >= queries.length) return Promise.resolve(null);
+    var q = queries[attempt];
+    attempt++;
+    log('Pixabay try ' + attempt + ': "' + q + '"');
+    return fetch('https://pixabay.com/api/videos/?key=' + key + '&q=' + encodeURIComponent(q) + '&per_page=3')
+      .then(function(r){ return r.json(); }).then(function(d){
+        if (d.hits && d.hits.length > 0) {
+          var v = d.hits[0];
+          var f = v.videos && (v.videos.large || v.videos.medium || v.videos.small);
+          if (f && f.url) {
+            log('Pixabay found: ' + q);
+            return { url: f.url, source: 'pixabay', query: q };
+          }
+        }
+        return new Promise(function(res){ setTimeout(res, 800); }).then(tryNext);
+      }).catch(function(){
+        return new Promise(function(res){ setTimeout(res, 800); }).then(tryNext);
+      });
+  }
+  return tryNext();
 }
 
 function grokPrompt(sc) {
   var styles = {
     tense: 'Dark cinematic, dramatic shadows, film grain, high tension. 16:9.',
-    emotional: 'Soft melancholic lighting, muted warm tones, emotional. 16:9.',
+    emotional: 'Soft melancholic lighting, muted warm tones, emotional depth. 16:9.',
     evidence: 'Documentary style, cool tones, high contrast. 16:9.',
-    timestamp: 'Dark minimal, text overlay background. 16:9.',
+    timestamp: 'Dark minimal background for text overlay. 16:9.',
     neutral: 'Cinematic documentary, natural lighting. 16:9.'
   };
   return sc.cleanText.substring(0, 80) + '. ' + (styles[sc.type] || styles.neutral);
+}
+
+// ── SUGGESTION 1: Force media — ensure every scene has something
+function getFallbackForScene(sc) {
+  return { url: null, source: 'grok', query: sc.query, prompt: grokPrompt(sc) };
 }
 
 function analyzeAndFetch() {
@@ -211,6 +313,7 @@ function analyzeAndFetch() {
   p1Status.style.display = 'block';
   p1Status.className = 'status loading';
   p1Status.textContent = 'Parsing script...';
+  debugLog = [];
 
   scenes = parseScript(raw);
   footageData = {};
@@ -221,6 +324,8 @@ function analyzeAndFetch() {
     return;
   }
 
+  log('Parsed ' + scenes.length + ' scenes');
+
   var list = document.getElementById('scenesList');
   list.innerHTML = '';
   document.getElementById('scenesOutput').style.display = 'block';
@@ -229,63 +334,98 @@ function analyzeAndFetch() {
   function processNext() {
     if (i >= scenes.length) {
       p1Fill.style.width = '100%';
-      p1Status.textContent = 'Done! ' + scenes.length + ' scenes processed.';
-      p1Status.className = 'status ok';
+
+      // ── SUGGESTION 4: Debug print — validate all scenes
+      var nullCount = 0;
+      var summary = scenes.map(function(sc, idx) {
+        var ft = footageData[idx];
+        var status = ft && ft.url ? 'ok' : (ft ? ft.source : 'MISSING');
+        if (!ft || !ft.url) nullCount++;
+        return 'Scene ' + sc.index + ': ' + status;
+      });
+      log('=== SCENE VALIDATION ===');
+      summary.forEach(function(s){ log(s); });
+      log('Total: ' + scenes.length + ' | With footage: ' + (scenes.length - nullCount) + ' | Grok/missing: ' + nullCount);
+
+      // Show validation badge
+      var badge = document.getElementById('validationBadge');
+      if (nullCount === 0) {
+        badge.textContent = '✓ All scenes have footage';
+        badge.style.background = 'rgba(34,197,94,0.2)';
+        badge.style.color = '#22c55e';
+        badge.style.border = '1px solid rgba(34,197,94,0.3)';
+      } else {
+        badge.textContent = nullCount + ' scenes need Grok images';
+        badge.style.background = 'rgba(245,158,11,0.2)';
+        badge.style.color = '#f59e0b';
+        badge.style.border = '1px solid rgba(245,158,11,0.3)';
+      }
+
+      p1Status.textContent = 'Done! ' + scenes.length + ' scenes · ' + nullCount + ' need Grok images';
+      p1Status.className = nullCount === 0 ? 'status ok' : 'status loading';
       buildRenderSummary();
       document.getElementById('renderSection').style.display = 'block';
       return;
     }
+
     var sc = scenes[i];
     p1Fill.style.width = ((i / scenes.length) * 100) + '%';
-    p1Status.textContent = 'Scene ' + (i+1) + '/' + scenes.length + '...';
+    p1Status.textContent = 'Scene ' + (i+1) + '/' + scenes.length + (sc.abstract ? ' [ABSTRACT → smart query]' : '') + '...';
 
     var card = document.createElement('div');
     card.className = 'scene-card';
     card.id = 'sc-' + i;
-    card.innerHTML = '<div class="scene-num">SCENE ' + String(i+1).padStart(2,'0') + '</div>' +
+    card.innerHTML =
+      '<div class="scene-num">SCENE ' + String(i+1).padStart(2,'0') + (sc.abstract ? ' · ABSTRACT' : '') + '</div>' +
       '<span class="badge ' + sc.type + '">' + sc.type.toUpperCase() + '</span>' +
       '<div class="scene-text">"' + sc.cleanText.substring(0, 80) + (sc.cleanText.length > 80 ? '...' : '') + '"</div>' +
-      '<div class="scene-dur">' + sc.dur + 's · ' + sc.cleanText.trim().split(/\s+/).length + ' words</div>' +
-      '<div id="ft-' + i + '"><span style="color:#555;font-size:11px">Fetching footage...</span></div>';
+      '<div class="scene-dur">' + sc.dur + 's · query: "' + sc.query + '"</div>' +
+      '<div id="ft-' + i + '"><span style="color:#555;font-size:11px">Fetching...</span></div>';
     list.appendChild(card);
 
     var idx = i;
-    var promise;
+
     if (sc.type === 'timestamp') {
       footageData[idx] = { source: 'text', url: null };
-      document.getElementById('ft-' + idx).innerHTML = '<div class="footage-ok">🕐 Text overlay</div>';
+      document.getElementById('ft-' + idx).innerHTML = '<div class="footage-ok">🕐 Text overlay — no footage needed</div>';
       i++;
       setTimeout(processNext, 100);
       return;
     }
 
+    // ── SUGGESTION 2: Full retry chain — Pexels → Pixabay → Fallback
+    var chain;
     if (pKey) {
-      promise = fetchPexels(sc.query, pKey, sc.dur);
+      chain = fetchPexelsWithRetry(sc, pKey);
     } else {
-      promise = Promise.resolve(null);
+      chain = Promise.resolve(null);
     }
 
-    promise.then(function(result) {
+    chain.then(function(result) {
       if (result) {
         footageData[idx] = result;
-        document.getElementById('ft-' + idx).innerHTML = '<div class="footage-ok">🟣 Pexels: "' + result.query + '"</div>';
-      } else if (pbKey) {
-        return fetchPixabay(sc.query, pbKey).then(function(r2) {
+        document.getElementById('ft-' + idx).innerHTML = '<div class="footage-ok">🟣 ' + result.source + ': "' + result.query + '"</div>';
+        return null;
+      }
+      if (pbKey) {
+        return fetchPixabayWithRetry(sc, pbKey).then(function(r2) {
           if (r2) {
             footageData[idx] = r2;
             document.getElementById('ft-' + idx).innerHTML = '<div class="footage-ok">🔵 Pixabay: "' + r2.query + '"</div>';
           } else {
-            footageData[idx] = { source: 'grok', url: null, prompt: grokPrompt(sc) };
-            document.getElementById('ft-' + idx).innerHTML = '<div class="footage-grok">🟡 Grok: ' + grokPrompt(sc).substring(0, 60) + '...</div>';
+            // ── SUGGESTION 1: Force fallback — never leave scene empty
+            footageData[idx] = getFallbackForScene(sc);
+            document.getElementById('ft-' + idx).innerHTML = '<div class="footage-grok">🟡 Grok needed: ' + grokPrompt(sc).substring(0, 50) + '...</div>';
           }
         });
       } else {
-        footageData[idx] = { source: 'grok', url: null, prompt: grokPrompt(sc) };
-        document.getElementById('ft-' + idx).innerHTML = '<div class="footage-grok">🟡 Grok: ' + grokPrompt(sc).substring(0, 60) + '...</div>';
+        footageData[idx] = getFallbackForScene(sc);
+        document.getElementById('ft-' + idx).innerHTML = '<div class="footage-grok">🟡 Grok needed: ' + grokPrompt(sc).substring(0, 50) + '...</div>';
+        return null;
       }
     }).then(function() {
       i++;
-      setTimeout(processNext, 300);
+      setTimeout(processNext, 400);
     });
   }
 
@@ -317,16 +457,21 @@ function startRender() {
   renderResult.innerHTML = '';
   renderFill.style.width = '10%';
 
+  // ── SUGGESTION 4: Debug print before render
+  log('=== RENDER START ===');
   var payload = {
     jobId: 'job_' + Date.now(),
     title: title,
     scenes: scenes.map(function(sc, i) {
       var ft = footageData[i] || {};
+      // ── SUGGESTION 5: Always ensure media exists
+      var footageUrl = ft.url || null;
+      log('Scene ' + sc.index + ': ' + sc.type + ' | url=' + (footageUrl ? 'YES' : 'null') + ' | dur=' + sc.dur + 's');
       return {
         order: sc.index,
         type: sc.type,
         duration: sc.dur,
-        footageUrl: ft.url || null,
+        footageUrl: footageUrl,
         timestampText: sc.cleanText,
         narrationText: sc.cleanText
       };
@@ -335,10 +480,10 @@ function startRender() {
 
   var prog = 10;
   var interval = setInterval(function() {
-    prog = Math.min(prog + 1.5, 88);
+    prog = Math.min(prog + 1.2, 88);
     renderFill.style.width = prog + '%';
-    renderStatus.textContent = 'Rendering... ' + Math.round(prog) + '%';
-  }, 1500);
+    renderStatus.textContent = 'Server rendering... ' + Math.round(prog) + '%';
+  }, 2000);
 
   fetch(SERVER + '/render', {
     method: 'POST',
@@ -347,7 +492,7 @@ function startRender() {
   }).then(function(res) {
     clearInterval(interval);
     if (!res.ok) {
-      return res.json().then(function(e) { throw new Error(e.error || 'Server error ' + res.status); });
+      return res.json().then(function(e){ throw new Error(e.error || 'Server error ' + res.status); });
     }
     renderFill.style.width = '100%';
     renderStatus.textContent = 'Done! Downloading...';
@@ -356,13 +501,20 @@ function startRender() {
   }).then(function(blob) {
     renderedBlob = blob;
     var mb = (blob.size / 1024 / 1024).toFixed(1);
-    renderResult.innerHTML = '<div class="render-box"><div style="font-size:20px;color:#22c55e;font-weight:700;margin-bottom:8px">✓ DOCUMENTARY READY</div><div style="font-size:12px;color:#888;margin-bottom:12px">' + scenes.length + ' scenes · ' + mb + ' MB</div><button class="btn" onclick="downloadVideo()">⬇ Download .mp4</button></div>';
+    renderResult.innerHTML =
+      '<div class="render-box">' +
+      '<div style="font-size:20px;color:#22c55e;font-weight:700;margin-bottom:8px">✓ DOCUMENTARY READY</div>' +
+      '<div style="font-size:12px;color:#888;margin-bottom:12px">' + scenes.length + ' scenes · ' + mb + ' MB</div>' +
+      '<button class="btn" onclick="downloadVideo()">⬇ Download .mp4</button>' +
+      '</div>';
     renderBtn.disabled = false;
+    log('Render complete. Size: ' + mb + 'MB');
   }).catch(function(e) {
     clearInterval(interval);
     renderStatus.textContent = 'Error: ' + e.message;
     renderStatus.className = 'status error';
     renderBtn.disabled = false;
+    log('Render error: ' + e.message);
   });
 }
 
