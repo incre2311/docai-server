@@ -329,9 +329,14 @@ def render():
             if scene_type == 'timestamp':
                 create_text_clip(timestamp_text, duration, processed_path, style='timestamp')
             elif footage_url:
-                raw_path = os.path.join(job_dir, f'raw_{str(order).zfill(2)}.mp4')
-                download_clip(footage_url, raw_path)
-                apply_cutting_rules(raw_path, processed_path, duration, scene_type)
+    raw_path = os.path.join(job_dir, f'raw_{str(order).zfill(2)}.mp4')
+    result = download_clip(footage_url, raw_path)
+    if result and os.path.exists(raw_path) and os.path.getsize(raw_path) > 1000:
+        apply_cutting_rules(raw_path, processed_path, duration, scene_type)
+    else:
+        print(f"Download failed for scene {order}, using placeholder", flush=True)
+        create_text_clip(f'Scene {order}', duration, processed_path, style='placeholder')
+
             else:
                 narration = scene.get('narrationText', f'Scene {order}')[:60]
                 create_text_clip(narration, duration, processed_path, style='placeholder')
