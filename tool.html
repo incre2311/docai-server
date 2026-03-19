@@ -108,7 +108,8 @@ let renderedBlob = null;
 async function checkServer() {
   const el = document.getElementById('serverStatus');
   try {
-    const res = await fetch('/health');
+    const res = await fetch('const res = await fetch('https://docai-server-production.up.railway.app/health');
+');
     const d = await res.json();
     el.textContent = '✓ ' + d.message;
     el.className = 'status ok';
