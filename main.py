@@ -69,14 +69,24 @@ def download_clip(url, path):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         'Referer': 'https://www.pexels.com/'
     }
-    r = requests.get(url, stream=True, timeout=60, headers=headers)
-    if r.status_code != 200:
-        print(f"Download failed: {r.status_code}", flush=True)
-        return None
-    with open(path, 'wb') as f:
-        for chunk in r.iter_content(chunk_size=8192):
-            f.write(chunk)
-    return path
+    # Try twice
+    for attempt in range(2):
+        try:
+            r = requests.get(url, stream=True, timeout=60, headers=headers)
+            if r.status_code == 200:
+                with open(path, 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
+                if os.path.getsize(path) > 1000:
+                    print(f"Download success on attempt {attempt+1}", flush=True)
+                    return path
+            print(f"Attempt {attempt+1} failed: status {r.status_code}", flush=True)
+        except Exception as e:
+            print(f"Attempt {attempt+1} error: {str(e)}", flush=True)
+        time.sleep(2)
+    print("Both download attempts failed", flush=True)
+    return None
+
 
 def trim_clip(input_path, output_path, duration, scene_type='neutral'):
     vf = get_base_filter(scene_type)
