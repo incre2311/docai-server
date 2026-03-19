@@ -276,7 +276,8 @@ def concat_clips(clip_paths, output_path):
     
 @app.route("/", methods=["GET"])
 def index():
-    with open("/app/tool.html", "r") as f:
+    html_path = os.path.join(os.path.dirname(__file__), "tool.html")
+    with open(html_path, "r") as f:
         html = f.read()
     return Response(html, mimetype="text/html")
 
