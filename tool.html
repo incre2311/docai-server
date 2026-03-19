@@ -2,49 +2,359 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DOC·AI — Documentary Brain</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOC·AI</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0a;color:#f0f0f0;font-family:system-ui,sans-serif;padding:20px;min-height:100vh}
+h1{font-size:28px;color:#e8ff00;letter-spacing:2px;margin-bottom:4px}
+.sub{font-size:11px;color:#444;letter-spacing:3px;margin-bottom:24px}
+.box{background:#111;border:1px solid #222;border-radius:10px;padding:16px;margin-bottom:16px}
+.box h2{font-size:13px;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+textarea,input,select{width:100%;background:#181818;border:1px solid #333;border-radius:6px;color:#f0f0f0;padding:10px;font-size:13px;font-family:inherit;outline:none;margin-bottom:10px}
+textarea{resize:vertical;min-height:120px;line-height:1.6}
+.btn{background:#e8ff00;color:#000;border:none;border-radius:6px;padding:12px 20px;font-size:13px;font-weight:700;cursor:pointer;width:100%;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.btn-ghost{background:transparent;color:#888;border:1px solid #333;color:#888}
+.btn-purple{background:#7c3aed;color:white}
+.btn-red{background:#ef4444;color:white}
+.status{font-size:11px;font-family:monospace;padding:8px 12px;border-radius:5px;background:#181818;border:1px solid #333;margin-bottom:10px}
+.status.ok{border-color:#22c55e;color:#22c55e}
+.status.error{border-color:#ef4444;color:#ef4444}
+.status.loading{border-color:#f97316;color:#f97316}
+.scene-card{background:#181818;border:1px solid #333;border-radius:8px;padding:12px;margin-bottom:8px}
+.scene-num{font-size:10px;font-family:monospace;color:#e8ff00;margin-bottom:4px}
+.scene-type{font-size:10px;padding:2px 8px;border-radius:3px;display:inline-block;margin-bottom:6px}
+.tense{background:rgba(239,68,68,0.2);color:#ef4444;border:1px solid rgba(239,68,68,0.3)}
+.emotional{background:rgba(168,85,247,0.2);color:#a855f7;border:1px solid rgba(168,85,247,0.3)}
+.neutral{background:rgba(136,136,136,0.2);color:#888;border:1px solid #333}
+.timestamp{background:rgba(232,255,0,0.2);color:#e8ff00;border:1px solid rgba(232,255,0,0.3)}
+.evidence{background:rgba(59,130,246,0.2);color:#3b82f6;border:1px solid rgba(59,130,246,0.3)}
+.scene-text{font-size:12px;color:#888;font-style:italic;margin-bottom:6px}
+.scene-dur{font-size:11px;font-family:monospace;color:#555}
+.progress{height:4px;background:#222;border-radius:2px;margin:10px 0;overflow:hidden}
+.progress-fill{height:100%;background:#e8ff00;border-radius:2px;width:0%;transition:width 0.3s}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.footage-result{font-size:11px;color:#3b82f6;font-family:monospace;margin-top:6px}
+.grok-result{font-size:11px;color:#f59e0b;margin-top:6px;line-height:1.5}
+.render-box{background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:8px;padding:16px;text-align:center;margin-top:10px}
+.render-title{font-size:20px;color:#22c55e;font-weight:700;margin-bottom:8px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:10px;font-family:monospace;color:#555;margin-bottom:12px}
+</style>
+</head>
+<body>
+<h1>DOC·AI</h1>
+<div class="sub">DOCUMENTARY PRODUCTION TOOL</div>
 
-  :root {
-    --bg: #080808;
-    --surface: #111111;
-    --surface2: #181818;
-    --surface3: #202020;
-    --border: #2a2a2a;
-    --accent: #e8ff00;
-    --red: #ff3333;
-    --blue: #3b82f6;
-    --green: #22c55e;
-    --orange: #f97316;
-    --purple: #a855f7;
-    --text: #f0f0f0;
-    --text2: #888;
-    --text3: #444;
+<!-- STATUS -->
+<div class="box">
+  <h2>Server Status</h2>
+  <div class="status" id="serverStatus">Checking server...</div>
+</div>
+
+<!-- PHASE 1: SCRIPT -->
+<div class="box">
+  <h2>Phase 1 — Paste Script</h2>
+  <div class="legend">
+    <span>.. = new scene</span>
+    <span>— = 1s pause</span>
+    <span>( ) = AI task</span>
+    <span>Date/Time = timestamp</span>
+  </div>
+  <textarea id="scriptInput" placeholder="October 1st, 2013. 3:07 PM..&#10;A 29-year-old man sits in a public library..&#10;He is running the most sophisticated criminal empire..."></textarea>
+  <div style="font-size:11px;color:#555;margin-bottom:10px;" id="sceneCount">0 scenes detected</div>
+  <div class="grid2">
+    <input type="password" id="pexelsKey" placeholder="Pexels API Key">
+    <input type="password" id="pixabayKey" placeholder="Pixabay API Key">
+  </div>
+  <input type="password" id="newsKey" placeholder="NewsAPI Key (optional — for evidence scenes)">
+  <button class="btn" onclick="analyzeAndFetch()">⚡ Analyze + Fetch Footage</button>
+  <div class="progress"><div class="progress-fill" id="p1Fill"></div></div>
+  <div class="status" id="p1Status" style="display:none"></div>
+</div>
+
+<!-- SCENES OUTPUT -->
+<div id="scenesOutput" style="display:none">
+  <div class="box">
+    <h2>Scenes</h2>
+    <div id="scenesList"></div>
+  </div>
+</div>
+
+<!-- PHASE 4: RENDER -->
+<div id="renderSection" style="display:none">
+  <div class="box">
+    <h2>Phase 4 — Render Documentary</h2>
+    <div style="background:#181818;border:1px solid #333;border-radius:6px;padding:12px;margin-bottom:12px;font-size:12px;color:#888;line-height:1.8;" id="renderSummary"></div>
+    <input type="text" id="docTitle" placeholder="Documentary Title (e.g. Silk Road: The Dark Web Empire)" style="margin-bottom:10px;">
+    <button class="btn btn-purple" id="renderBtn" onclick="startRender()">🎬 Render Documentary</button>
+    <div class="progress"><div class="progress-fill" id="renderFill"></div></div>
+    <div class="status" id="renderStatus" style="display:none"></div>
+    <div id="renderResult" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+// ── KEYWORDS
+const TENSE_KW = ['gun','bomb','war','fight','chase','arrest','raid','shoot','attack','cartel','hitman','kill','murder','crime','fbi','cia','police','swat','escape','military'];
+const EMOTIONAL_KW = ['suicide','funeral','grief','loss','cry','death','tears','tragedy','pain','alone','family','mother','father','love','goodbye','broken'];
+const EVIDENCE_KW = ['according','reported','statistics','billion','million','percent','evidence','revealed','investigation','confirmed','classified'];
+const DATE_RE = [/(january|february|march|april|may|june|july|august|september|october|november|december)/i,/\d{4}/,/\d{1,2}:\d{2}/];
+
+let scenes = [];
+let footageData = {};
+let renderedBlob = null;
+
+// ── SERVER CHECK
+async function checkServer() {
+  const el = document.getElementById('serverStatus');
+  try {
+    const res = await fetch('/health');
+    const d = await res.json();
+    el.textContent = '✓ ' + d.message;
+    el.className = 'status ok';
+  } catch(e) {
+    el.textContent = '✕ Server unreachable';
+    el.className = 'status error';
+  }
+}
+
+// ── DURATION CALC
+function calcDuration(text, type, pauses) {
+  const words = text.trim().split(/\s+/).filter(w=>w.length>0).length;
+  let dur = (words/150)*60;
+  if (type==='tense') dur *= 0.75;
+  if (type==='emotional') dur *= 1.25;
+  if (type==='timestamp') return 4;
+  pauses.forEach(p => { if(p==='1s') dur+=1; if(p==='2s') dur+=2; });
+  return Math.max(3, Math.round(dur));
+}
+
+// ── PARSE SCRIPT
+function parseScript(raw) {
+  return raw.split('..').map((t,i) => {
+    t = t.trim();
+    if (!t) return null;
+    const tasks = [];
+    let clean = t;
+    [...t.matchAll(/\(([^)]+)\)/g)].forEach(m => { tasks.push(m[1]); clean = clean.replace(m[0],'').trim(); });
+    const pauses = [];
+    (clean.match(/—/g)||[]).forEach(()=>pauses.push('1s'));
+    (clean.match(/
+\s*
+/g)||[]).forEach(()=>pauses.push('2s'));
+    clean = clean.replace(/—/g,'').replace(/
+\s*
+/g,' ').trim();
+    const lower = clean.toLowerCase();
+    const isTimestamp = DATE_RE.some(r=>r.test(clean));
+    const isTense = TENSE_KW.some(k=>lower.includes(k));
+    const isEmotional = EMOTIONAL_KW.some(k=>lower.includes(k));
+    const needsEvidence = EVIDENCE_KW.some(k=>lower.includes(k));
+    let type = 'neutral';
+    if (isTimestamp) type = 'timestamp';
+    else if (needsEvidence) type = 'evidence';
+    else if (isTense) type = 'tense';
+    else if (isEmotional) type = 'emotional';
+    const dur = calcDuration(clean, type, pauses);
+    // Build smart Pexels query
+    const meaningful = clean.split(' ').filter(w=>w.length>3).slice(0,4).join(' ');
+    return { index:i+1, cleanText:clean, type, pauses, tasks, calculatedDuration:dur, needsEvidence, isTimestamp, pexelsQuery:meaningful };
+  }).filter(Boolean);
+}
+
+// ── FETCH PEXELS
+async function fetchPexels(query, key, duration) {
+  try {
+    const res = await fetch('https://api.pexels.com/videos/search?query='+encodeURIComponent(query)+'&per_page=3&orientation=landscape', { headers:{'Authorization':key} });
+    if (!res.ok) return null;
+    const d = await res.json();
+    if (!d.videos||!d.videos.length) return null;
+    const v = d.videos[0];
+    const f = v.video_files && (v.video_files.find(f=>f.quality==='hd')||v.video_files[0]);
+    return { url:f&&f.link, preview:v.image, duration:v.duration, needed:duration, query, source:'pexels' };
+  } catch(e) { return null; }
+}
+
+// ── FETCH PIXABAY
+async function fetchPixabay(query, key) {
+  try {
+    const res = await fetch('https://pixabay.com/api/videos/?key='+key+'&q='+encodeURIComponent(query)+'&per_page=3');
+    if (!res.ok) return null;
+    const d = await res.json();
+    if (!d.hits||!d.hits.length) return null;
+    const v = d.hits[0];
+    const f = v.videos&&(v.videos.large||v.videos.medium||v.videos.small);
+    return { url:f&&f.url, preview:null, query, source:'pixabay' };
+  } catch(e) { return null; }
+}
+
+// ── GROK PROMPT
+function buildGrokPrompt(sc) {
+  const styles = { tense:'Dark cinematic, dramatic shadows, high tension, film grain, desaturated with red accent, 16:9.', emotional:'Soft melancholic lighting, muted warm tones, emotional depth, cinematic, 16:9.', evidence:'Documentary style, high contrast, cool blue tones, 16:9.', neutral:'Cinematic documentary, natural lighting, dramatic composition, 16:9.', timestamp:'Dark background with subtle texture, cinematic, 16:9.' };
+  return sc.cleanText.substring(0,100) + '. ' + (styles[sc.type]||styles.neutral);
+}
+
+// ── ANALYZE + FETCH
+async function analyzeAndFetch() {
+  const raw = document.getElementById('scriptInput').value.trim();
+  if (!raw) { alert('Paste your script first'); return; }
+  const pKey = document.getElementById('pexelsKey').value.trim();
+  const pbKey = document.getElementById('pixabayKey').value.trim();
+  const p1Fill = document.getElementById('p1Fill');
+  const p1Status = document.getElementById('p1Status');
+
+  p1Status.style.display = 'block';
+  p1Status.className = 'status loading';
+  p1Status.textContent = 'Parsing script...';
+
+  scenes = parseScript(raw);
+  footageData = {};
+
+  if (!scenes.length) { p1Status.textContent = 'No scenes found. Use .. to separate scenes.'; p1Status.className='status error'; return; }
+
+  const list = document.getElementById('scenesList');
+  list.innerHTML = '';
+  document.getElementById('scenesOutput').style.display = 'block';
+
+  for (let i=0; i<scenes.length; i++) {
+    const sc = scenes[i];
+    p1Fill.style.width = ((i/scenes.length)*100)+'%';
+    p1Status.textContent = 'Scene '+(i+1)+'/'+scenes.length+' — fetching footage...';
+
+    // Create scene card
+    const card = document.createElement('div');
+    card.className = 'scene-card';
+    card.id = 'sc-'+i;
+    card.innerHTML = '<div class="scene-num">SCENE '+String(i+1).padStart(2,'0')+'</div><span class="scene-type '+sc.type+'">'+sc.type.toUpperCase()+'</span><div class="scene-text">"'+sc.cleanText.substring(0,80)+(sc.cleanText.length>80?'...:'')+'"</div><div class="scene-dur">'+sc.calculatedDuration+'s · '+sc.cleanText.trim().split(/\s+/).length+' words</div><div id="ft-'+i+'"><span style="color:#555;font-size:11px;font-family:monospace;">Fetching...</span></div>';
+    list.appendChild(card);
+
+    // Fetch footage
+    let result = null;
+    if (sc.type === 'timestamp') {
+      result = { type:'timestamp', source:'text' };
+      document.getElementById('ft-'+i).innerHTML = '<div class="footage-result">🕐 Text overlay — no footage needed</div>';
+    } else if (pKey) {
+      result = await fetchPexels(sc.pexelsQuery, pKey, sc.calculatedDuration);
+      if (result) {
+        document.getElementById('ft-'+i).innerHTML = '<div class="footage-result">🟣 Pexels: "'+result.query+'" — '+result.duration+'s available</div>';
+      }
+    }
+    if (!result && pbKey) {
+      result = await fetchPixabay(sc.pexelsQuery, pbKey);
+      if (result) {
+        document.getElementById('ft-'+i).innerHTML = '<div class="footage-result">🔵 Pixabay: "'+result.query+'"</div>';
+      }
+    }
+    if (!result) {
+      result = { type:'grok', source:'manual', prompt:buildGrokPrompt(sc) };
+      document.getElementById('ft-'+i).innerHTML = '<div class="grok-result">🟡 Grok prompt: '+buildGrokPrompt(sc).substring(0,80)+'...</div>';
+    }
+
+    footageData[i] = result;
+    await new Promise(r=>setTimeout(r,200));
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  p1Fill.style.width = '100%';
+  p1Status.textContent = '✓ All '+scenes.length+' scenes processed!';
+  p1Status.className = 'status ok';
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-    padding-bottom: 40px;
+  // Show render section
+  buildRenderSummary();
+  document.getElementById('renderSection').style.display = 'block';
+}
+
+function buildRenderSummary() {
+  const total = scenes.reduce((a,s)=>a+s.calculatedDuration,0);
+  const pexels = Object.values(footageData).filter(r=>r.source==='pexels').length;
+  const pixabay = Object.values(footageData).filter(r=>r.source==='pixabay').length;
+  const grok = Object.values(footageData).filter(r=>r.source==='manual').length;
+  const timestamps = Object.values(footageData).filter(r=>r.source==='text').length;
+  document.getElementById('renderSummary').innerHTML =
+    '📽 Total Scenes: <strong>'+scenes.length+'</strong> &nbsp;&nbsp; ⏱ Duration: <strong style="color:#e8ff00">'+Math.floor(total/60)+'m '+( total%60)+'s</strong><br>'+
+    '🟣 Pexels: <strong>'+pexels+'</strong> &nbsp; 🔵 Pixabay: <strong>'+pixabay+'</strong> &nbsp; 🟡 Grok (manual): <strong>'+grok+'</strong> &nbsp; 🕐 Timestamps: <strong>'+timestamps+'</strong>';
+}
+
+async function startRender() {
+  const title = document.getElementById('docTitle').value.trim() || 'Documentary';
+  const renderBtn = document.getElementById('renderBtn');
+  const renderFill = document.getElementById('renderFill');
+  const renderStatus = document.getElementById('renderStatus');
+  const renderResult = document.getElementById('renderResult');
+
+  renderBtn.disabled = true;
+  renderStatus.style.display = 'block';
+  renderStatus.className = 'status loading';
+  renderStatus.textContent = 'Sending to server...';
+  renderResult.style.display = 'none';
+
+  const payload = {
+    jobId: 'job_'+Date.now(),
+    title: title,
+    scenes: scenes.map((sc,i) => {
+      const ft = footageData[i]||{};
+      return {
+        order: sc.index,
+        type: sc.type,
+        duration: sc.calculatedDuration,
+        footageUrl: ft.url||null,
+        timestampText: sc.cleanText,
+        narrationText: sc.cleanText
+      };
+    })
+  };
+
+  // Animate progress while waiting
+  let prog = 10;
+  renderFill.style.width = '10%';
+  const interval = setInterval(()=>{
+    prog = Math.min(prog+1.5, 88);
+    renderFill.style.width = prog+'%';
+    renderStatus.textContent = 'Server rendering... '+Math.round(prog)+'%';
+  }, 1500);
+
+  try {
+    const res = await fetch('/render', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    clearInterval(interval);
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error||'Server error '+res.status);
+    }
+    renderFill.style.width = '100%';
+    renderStatus.textContent = '✓ Render complete! Downloading...';
+    renderStatus.className = 'status ok';
+    const blob = await res.blob();
+    renderedBlob = blob;
+    const sizeMB = (blob.size/1024/1024).toFixed(1);
+    renderResult.style.display = 'block';
+    renderResult.innerHTML = '<div class="render-box"><div class="render-title">✓ DOCUMENTARY READY</div><div style="font-size:12px;color:#888;margin-bottom:12px;">'+scenes.length+' scenes · '+sizeMB+' MB</div><button class="btn" onclick="downloadVideo()">⬇ Download .mp4</button></div>';
+  } catch(e) {
+    clearInterval(interval);
+    renderStatus.textContent = '✕ Error: '+e.message;
+    renderStatus.className = 'status error';
   }
+  renderBtn.disabled = false;
+}
 
-  /* HEADER */
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
+function downloadVideo() {
+  if (!renderedBlob) return;
+  const url = URL.createObjectURL(renderedBlob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'documentary_'+Date.now()+'.mp4'; a.click();
+  URL.revokeObjectURL(url);
+}
 
-  .logo {
+// Script counter
+document.getElementById('scriptInput').addEventListener('input', function() {
+  const count = this.value.split('..').filter(s=>s.trim()).length;
+  document.getElementById('sceneCount').textContent = count + ' scene' + (count!==1?'s':'') + ' detected';
+});
+
+// Init
+checkServer();
+</script>
+</body>
+</html>
