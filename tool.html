@@ -1,17 +1,50 @@
-python3 << 'PYEOF'
-# Modify the HTML to use relative URL for Railway
-with open('/mnt/user-data/outputs/documentary-brain.html', 'r') as f:
-    html = f.read()
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DOC·AI — Documentary Brain</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
 
-# Replace hardcoded Railway URL with relative path
-html = html.replace(
-    "const RAILWAY_URL = 'https://docai-server-production.up.railway.app';",
-    "const RAILWAY_URL = window.location.origin;"
-)
+  :root {
+    --bg: #080808;
+    --surface: #111111;
+    --surface2: #181818;
+    --surface3: #202020;
+    --border: #2a2a2a;
+    --accent: #e8ff00;
+    --red: #ff3333;
+    --blue: #3b82f6;
+    --green: #22c55e;
+    --orange: #f97316;
+    --purple: #a855f7;
+    --text: #f0f0f0;
+    --text2: #888;
+    --text3: #444;
+  }
 
-with open('/mnt/user-data/outputs/tool.html', 'w') as f:
-    f.write(html)
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-print("Done. Size:", len(html))
-print("URL replaced:", "window.location.origin" in html)
-PYEOF
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
