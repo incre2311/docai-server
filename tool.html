@@ -131,7 +131,7 @@ function calcDuration(text, type, pauses) {
 
 // ── PARSE SCRIPT
 function parseScript(raw) {
-  return raw.split('..').map((t,i) => {
+  return raw.split(/\.\.+/).map((t,i) => {
     t = t.trim();
     if (!t) return null;
     const tasks = [];
