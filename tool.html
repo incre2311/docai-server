@@ -314,7 +314,7 @@ async function startRender() {
   }, 1500);
 
   try {
-    const res = await fetch('/render', {
+ const res = await fetch('https://docai-server-production.up.railway.app/render', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload)
