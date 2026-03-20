@@ -231,7 +231,6 @@ def render():
         job_dir = os.path.join(WORK_DIR, job_id)
         os.makedirs(job_dir, exist_ok=True)
         all_clips = []
-        used_urls = set()
         total_duration = 4
 
         intro_path = os.path.join(job_dir, '00_intro.mp4')
@@ -248,7 +247,7 @@ def render():
             narration_text = scene.get('narrationText', f'Scene {i+1}')
             narration_url = scene.get('narrationUrl')
             overlay = scene.get('overlay')
-            order = scene.get('order', i + 1)
+            order = i + 1
 
             print(f"Scene {order}/{len(scenes)} [{scene_type}] {duration}s url={'YES' if footage_url else 'NO'}", flush=True)
 
@@ -259,22 +258,18 @@ def render():
             if scene_type == 'timestamp':
                 fast_text_clip(timestamp_text, duration, processed_path)
 
-            elif footage_url and footage_url not in used_urls:
+            elif footage_url:
                 # SUGGESTION 7: Download to local path first
                 local_path = os.path.join(job_dir, f'local_{str(order).zfill(2)}.mp4')
                 dl = download_clip(footage_url, local_path)
 
                 # SUGGESTION 6: File validation after download
                 if dl and os.path.exists(local_path) and os.path.getsize(local_path) > 1000:
-                    result = fast_trim(local_path, processed_path, duration)
-                    if result:
-                        used_urls.add(footage_url)
-                    else:
-                        fast_text_clip(narration_text[:50], duration, processed_path, overlay=overlay)
-                else:
-                    # SUGGESTION 6: Use DEFAULT_CLIP equivalent — text fallback
-                    fast_text_clip(narration_text[:50], duration, processed_path, overlay=overlay)
-
+    result = fast_trim(local_path, processed_path, duration)
+    if not result:
+        fast_text_clip(narration_text[:50], duration, processed_path, overlay=overlay)
+else:
+    fast_text_clip(narration_text[:50], duration, processed_path, overlay=overlay)
             elif image_url:
                 img_clip = download_image_as_clip(image_url, processed_path, duration)
                 if not img_clip:
@@ -318,11 +313,17 @@ def render():
         audio_path = os.path.join(job_dir, 'ambient.aac')
         final_path = os.path.join(job_dir, f'final_{job_id}.mp4')
         audio_result = generate_ambient_audio(audio_path, total_duration)
-        if audio_result and os.path.exists(audio_path):
-            mixed = mix_ambient_into_final(output_path, audio_path, final_path, total_duration)
-            if mixed != output_path and os.path.exists(final_path):
-                output_path = final_path
+        music_url = "https://cdn.pixabay.com/audio/2022/03/15/audio_c8c8a73467.mp3"
+        music_path = os.path.join(job_dir, "music.mp3")
 
+        r = requests.get(music_url) 
+        with open(music_path, "wb") as f:
+        f.write(r.content)
+
+        mixed = mix_ambient_into_final(output_path, music_path, final_path, total_duration)
+
+        if os.path.exists(final_path):
+        output_path = final_path
         size_mb = os.path.getsize(output_path) / 1024 / 1024
         print(f"RENDER COMPLETE - {size_mb:.1f}MB - {total_duration}s", flush=True)
 
