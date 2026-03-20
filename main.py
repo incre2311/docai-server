@@ -7,7 +7,7 @@ import requests
 from flask import Flask, request, jsonify, send_file, Response
 from flask_cors import CORS
 
-print(“DOC·AI Server initializing…”, flush=True)
+print("DOC-AI Server initializing...", flush=True)
 sys.stdout.flush()
 
 app = Flask(**name**)
