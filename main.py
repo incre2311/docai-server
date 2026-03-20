@@ -265,11 +265,11 @@ def render():
 
                 # SUGGESTION 6: File validation after download
                 if dl and os.path.exists(local_path) and os.path.getsize(local_path) > 1000:
-    result = fast_trim(local_path, processed_path, duration)
-    if not result:
-        fast_text_clip(narration_text[:50], duration, processed_path, overlay=overlay)
-else:
-    fast_text_clip(narration_text[:50], duration, processed_path, overlay=overlay)
+                    result = fast_trim(local_path, processed_path, duration)
+                    if not result:
+                        fast_text_clip(narration_text[:50], duration, processed_path, overlay=overlay)
+               else:
+                   fast_text_clip(narration_text[:50], duration, processed_path, overlay=overlay)
             elif image_url:
                 img_clip = download_image_as_clip(image_url, processed_path, duration)
                 if not img_clip:
