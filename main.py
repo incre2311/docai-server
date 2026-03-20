@@ -37,18 +37,18 @@ headers = {
 }
 for attempt in range(2):
 try:
-print(f”Download attempt {attempt+1}: {url[:50]}”, flush=True)
+print(f"Download attempt {attempt+1}: {url[:50]}", flush=True)
 r = requests.get(url, stream=True, timeout=30, headers=headers)
 if r.status_code == 200:
 with open(path, ‘wb’) as f:
 for chunk in r.iter_content(chunk_size=8192):
 f.write(chunk)
 if os.path.exists(path) and os.path.getsize(path) > 1000:
-print(f”Download OK: {os.path.getsize(path)} bytes”, flush=True)
+print(f"Download OK: {os.path.getsize(path)} bytes", flush=True)
 return path
-print(f”Download failed: status {r.status_code}”, flush=True)
+print(f"Download failed: status {r.status_code}", flush=True)
 except Exception as e:
-print(f”Download error: {str(e)}”, flush=True)
+print(f"Download error: {str(e)}", flush=True)
 if attempt == 0:
 time.sleep(1)
 return None
@@ -70,7 +70,7 @@ cmd = [
 ]
 result = subprocess.run(cmd, capture_output=True, timeout=25)
 if result.returncode != 0:
-print(“Trim error:”, result.stderr.decode()[:100], flush=True)
+print("Trim error:", result.stderr.decode()[:100], flush=True)
 return None
 return output_path
 
@@ -81,7 +81,7 @@ return output_path
 # ─────────────────────────────────────────
 
 def fast_text_clip(text, duration, output_path):
-safe = text.replace(”’”,””).replace(’”’,’’).replace(’:’,’’).replace(’,’,’’)[:50]
+safe = text.replace("’","").replace(’"','').replace(’:’,’’).replace(’,’,’’)[:50]
 cmd = [
 ‘ffmpeg’, ‘-f’, ‘lavfi’,
 ‘-i’, f’color=c=black:s=1280x720:d={duration}’,
@@ -104,14 +104,14 @@ return output_path
 # ─────────────────────────────────────────
 
 def fast_intro(title, output_path, duration=4):
-safe = title.replace(”’”,””).replace(’”’,’’)[:40]
+safe = title.replace("'","").replace(’"’,’’)[:40]
 cmd = [
 ‘ffmpeg’, ‘-f’, ‘lavfi’,
 ‘-i’, f’color=c=black:s=1280x720:d={duration}’,
-‘-vf’, (f”drawtext=text=’{safe}’:fontcolor=white:fontsize=56”
-f”:x=(w-text_w)/2:y=(h-text_h)/2-20,”
-f”drawtext=text=‘A Documentary’:fontcolor=gray:fontsize=22”
-f”:x=(w-text_w)/2:y=(h-text_h)/2+30”),
+‘-vf’, (f"drawtext=text=’{safe}’:fontcolor=white:fontsize=56"
+f":x=(w-text_w)/2:y=(h-text_h)/2-20,"
+f"drawtext=text=‘A Documentary’:fontcolor=gray:fontsize=22"
+f":x=(w-text_w)/2:y=(h-text_h)/2+30"),
 ‘-c:v’, ‘libx264’, ‘-preset’, ‘ultrafast’,
 ‘-y’, output_path
 ]
@@ -132,7 +132,7 @@ def fast_concat(clip_paths, output_path):
 # Filter only existing clips
 valid = [c for c in clip_paths if os.path.exists(c) and os.path.getsize(c) > 100]
 if not valid:
-print(“No valid clips to concat!”, flush=True)
+print("No valid clips to concat!", flush=True)
 return None
 
 ```
@@ -163,7 +163,7 @@ return output_path
 
 @app.route(’/’, methods=[‘GET’])
 def index():
-html_path = os.path.join(os.path.dirname(**file**), ‘tool.html’)
+html_path = os.path.join(os.path.dirname(__file__), ‘tool.html’)
 with open(html_path, ‘r’) as f:
 html = f.read()
 return Response(html, mimetype=‘text/html’)
@@ -181,7 +181,7 @@ data = request.get_json()
 job_id = data.get(‘jobId’, str(uuid.uuid4()))
 scenes = data.get(‘scenes’, [])
 title = data.get(‘title’, ‘Documentary’)
-print(f”RENDER START — {len(scenes)} scenes — {title}”, flush=True)
+print(f"RENDER START — {len(scenes)} scenes — {title}", flush=True)
 
 ```
     if not scenes:
@@ -259,9 +259,9 @@ except Exception as e:
     return jsonify({'error': str(e)}), 500
 ```
 
-print(“Routes registered. Starting server…”, flush=True)
+print("Routes registered. Starting server…", flush=True)
 
 if **name** == ‘**main**’:
 port = int(os.environ.get(‘PORT’, 8080))
-print(f”Starting on port {port}”, flush=True)
+print(f"Starting on port {port}", flush=True)
 app.run(host=‘0.0.0.0’, port=port, debug=False, threaded=True)
