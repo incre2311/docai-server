@@ -11,7 +11,7 @@ print("DOC-AI Server initializing...", flush=True)
 sys.stdout.flush()
 
 app = Flask(__name__)
-CORS(app, origins=”*”, allow_headers=[“Content-Type”], methods=[“GET”, “POST”, “OPTIONS”])
+CORS(app, origins="*", allow_headers=["Content-Type"], methods=["GET", "POST", "OPTIONS"])
 
 @app.after_request
 def after_request(response):
