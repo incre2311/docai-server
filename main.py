@@ -15,10 +15,10 @@ CORS(app, origins="*", allow_headers=["Content-Type"], methods=["GET", "POST", "
 
 @app.after_request
 def after_request(response):
-response.headers.add(‘Access-Control-Allow-Origin’, ‘*’)
-response.headers.add(‘Access-Control-Allow-Headers’, ‘Content-Type’)
-response.headers.add(‘Access-Control-Allow-Methods’, ‘GET, POST, OPTIONS’)
-return response
+    response.headers.add(‘Access-Control-Allow-Origin’, ‘*’)
+    response.headers.add(‘Access-Control-Allow-Headers’, ‘Content-Type’)
+    response.headers.add(‘Access-Control-Allow-Methods’, ‘GET, POST, OPTIONS’)
+    return response
 
 WORK_DIR = ‘/tmp/docai’
 os.makedirs(WORK_DIR, exist_ok=True)
