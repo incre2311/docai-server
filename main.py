@@ -317,13 +317,14 @@ def render():
         music_path = os.path.join(job_dir, "music.mp3")
 
         r = requests.get(music_url) 
+        
         with open(music_path, "wb") as f:
-        f.write(r.content)
+            f.write(r.content)
 
         mixed = mix_ambient_into_final(output_path, music_path, final_path, total_duration)
 
         if os.path.exists(final_path):
-        output_path = final_path
+            output_path = final_path
         size_mb = os.path.getsize(output_path) / 1024 / 1024
         print(f"RENDER COMPLETE - {size_mb:.1f}MB - {total_duration}s", flush=True)
 
