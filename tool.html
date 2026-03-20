@@ -228,14 +228,12 @@ document.getElementById('scriptInput').addEventListener('input', updateCount);
 
 // ── SUGGESTION 2: Retry with broader queries
 function fetchPexelsWithRetry(sc, key) {
-  var queries = [
-    sc.query,
-    sc.query + ' documentary footage',
-    getSmartQuery(sc),
-    FALLBACK_QUERIES[sc.index % FALLBACK_QUERIES.length]
-  ];
+var queries = [
+  sc.query,
+  FALLBACK_QUERIES[(sc.index + 3) % FALLBACK_QUERIES.length]
+];
+  
   var attempt = 0;
-
   function tryNext() {
     if (attempt >= queries.length) return Promise.resolve(null);
     var q = queries[attempt];
@@ -262,10 +260,10 @@ function fetchPexelsWithRetry(sc, key) {
 
 function fetchPixabayWithRetry(sc, key) {
   var queries = [
-    sc.query,
-    getSmartQuery(sc),
-    FALLBACK_QUERIES[sc.index % FALLBACK_QUERIES.length]
-  ];
+  sc.query,
+  FALLBACK_QUERIES[(sc.index + 7) % FALLBACK_QUERIES.length]
+];
+  
   var attempt = 0;
 
   function tryNext() {
