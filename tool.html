@@ -733,6 +733,24 @@ function dlVideo(){
 }
 
 checkServer();
+
+// Restore saved API keys from localStorage
+(function restoreKeys(){
+  var keys = ['pexelsKey','pixabayKey','claudeKey','elKey'];
+  keys.forEach(function(id){
+    var saved = localStorage.getItem('docai_'+id);
+    var el = document.getElementById(id);
+    if(saved && el && !el.value) el.value = saved;
+  });
+})();
+
+// Save API keys whenever they change
+['pexelsKey','pixabayKey','claudeKey','elKey'].forEach(function(id){
+  var el = document.getElementById(id);
+  if(el) el.addEventListener('change', function(){
+    localStorage.setItem('docai_'+id, this.value);
+  });
+});
 </script>
 </body>
 </html>
