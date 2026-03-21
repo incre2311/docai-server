@@ -36,10 +36,13 @@ def download_clip(url, path):
 
 def make_video_from_clip(input_path, output_path, duration):
     # FIX 2: -t BEFORE -i to correctly trim duration
-    cmd = ['ffmpeg', '-t', str(duration), '-i', input_path,
-           '-vf', 'scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2',
-           '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac',
-           '-avoid_negative_ts', 'make_zero', '-y', output_path]
+    cmd = ['ffmpeg', '-i', input_path,
+       '-t', str(duration),
+       '-vf', 'scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,fps=25',
+       '-c:v', 'libx264', '-preset', 'ultrafast',
+       '-c:a', 'aac', '-shortest',
+       '-avoid_negative_ts', 'make_zero',
+       '-y', output_path]
     r = subprocess.run(cmd, capture_output=True, timeout=20)
     return output_path if r.returncode == 0 and os.path.exists(output_path) else None
 
