@@ -76,7 +76,7 @@ def make_timestamp_clip(text, duration, output_path):
     # FIX 7: Special timestamp styling — centered large white text
     safe = str(text).replace("'","").replace('"','').replace(',','')[:60]
     cmd = ['ffmpeg', '-f', 'lavfi', '-i', f'color=c=black:s=1280x720:d={duration}',
-           '-vf', f"drawtext=text='{safe}':fontcolor=white:fontsize=48:x=(w-text_w)/2:y=(h-text_h)/2:box=1:boxcolor=black@0.0:boxborderw=20,fade=t=in:st=0:d=0.4,fade=t=out:st={max(0,duration-0.4):.1f}:d=0.4",
+           '-vf', f"drawtext=text='{safe}':fontcolor=white:fontsize=44:x=(w-text_w)/2:y=(h-text_h)/2",
            '-c:v', 'libx264', '-preset', 'ultrafast', '-y', output_path]
     r = subprocess.run(cmd, capture_output=True, timeout=10)
     if r.returncode != 0:
