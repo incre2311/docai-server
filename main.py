@@ -206,6 +206,9 @@ def render():
         data = request.get_json()
         job_id = data.get('jobId', str(uuid.uuid4()))
         scenes = data.get('scenes', [])
+        if len(scenes) > 12:
+            scenes = scenes[:12]
+
         title = data.get('title', 'Documentary')
 
         # Hard limit — max 15 scenes per render to stay under timeout
