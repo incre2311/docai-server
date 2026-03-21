@@ -492,10 +492,10 @@ function genVO(idx){
 }
 
 function genAllVO(){
-  var key=document.getElementById('elKey').value.trim();
-  if(!key)key=localStorage.getItem('dk_elKey')||'';
-  var vid=document.getElementById('voiceSel').value;
-  if(!key||!vid){alert('Enter key and load voices');return;}
+  var key=document.getElementById('elKey').value.trim()||localStorage.getItem('dk_elKey')||'';
+  var vid=document.getElementById('voiceSel').value||localStorage.getItem('dk_voiceId')||'';
+  if(!key){alert('Enter ElevenLabs key in Phase 01 above');return;}
+  if(!vid){alert('Load voices first — click Load button');return;}
   var btn=document.getElementById('genAllBtn');btn.disabled=true;
   var i=0;
   function nx(){if(i>=scenes.length){btn.disabled=false;return;}genVO(i++);setTimeout(nx,900);}
