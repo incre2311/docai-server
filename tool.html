@@ -220,36 +220,54 @@ var RSS_FEEDS = {
 };
 
 function fetchRSS(){
-  var feed = RSS_FEEDS[document.getElementById('rssFeed').value];
+  var feedKey = document.getElementById('rssFeed').value;
   var search = document.getElementById('rssSearch').value.toLowerCase().trim();
-  var proxy = SERVER + '/rss?url=' + encodeURIComponent(feed);
   var list = document.getElementById('newsList');
-  list.innerHTML = '<div style="color:#555;font-size:11px;font-family:monospace">Fetching headlines...</div>';
+  list.innerHTML = '<div style="color:#f97316;font-size:11px;font-family:monospace">Fetching headlines...</div>';
 
-  fetch(proxy).then(function(r){return r.text();})
-  .then(function(d){
+  // Use Google News search directly - more reliable than RSS
+  var googleNewsUrl = 'https://news.google.com/rss/search?q=' + encodeURIComponent(search||feedKey) + '&hl=en-US&gl=US&ceid=US:en';
+  var proxyUrl = SERVER + '/rss?url=' + encodeURIComponent(googleNewsUrl);
+
+  fetch(proxyUrl).then(function(r){
+    if(!r.ok) throw new Error('Server error '+r.status);
+    return r.text();
+  }).then(function(d){
     var parser = new DOMParser();
     var xml = parser.parseFromString(d, 'text/xml');
-    var items = Array.from(xml.querySelectorAll('item')).slice(0, 20);
-    var filtered = search ? items.filter(function(item){
-      var t = (item.querySelector('title')||{textContent:''}).textContent.toLowerCase();
-      var desc = (item.querySelector('description')||{textContent:''}).textContent.toLowerCase();
-      return t.includes(search) || desc.includes(search);
-    }) : items.slice(0,10);
+    var items = Array.from(xml.querySelectorAll('item'));
 
-    if(!filtered.length){
-      list.innerHTML = '<div style="color:#ef4444;font-size:11px">No articles found. Try different search term.</div>';
+    if(!items.length){
+      // Try RSS feed as fallback
+      var feedUrl = RSS_FEEDS[feedKey];
+      var fallbackProxy = SERVER + '/rss?url=' + encodeURIComponent(feedUrl);
+      return fetch(fallbackProxy).then(function(r2){return r2.text();}).then(function(d2){
+        var xml2 = new DOMParser().parseFromString(d2, 'text/xml');
+        return Array.from(xml2.querySelectorAll('item'));
+      });
+    }
+    return items;
+  }).then(function(items){
+    if(!items||!items.length){
+      list.innerHTML = '<div style="color:#ef4444;font-size:11px">No articles found for "'+search+'". Try: bitcoin, trump, AI, war, crime</div>';
       return;
     }
 
+    var filtered = search ? items.filter(function(item){
+      var t = (item.querySelector('title')||{textContent:''}).textContent.toLowerCase();
+      return t.includes(search);
+    }) : items;
+
+    if(!filtered.length) filtered = items;
+
     list.innerHTML = '';
-    filtered.slice(0,8).forEach(function(item, idx){
-      var title = (item.querySelector('title')||{textContent:'No title'}).textContent;
+    filtered.slice(0,8).forEach(function(item){
+      var title = (item.querySelector('title')||{textContent:'No title'}).textContent.replace(/\s*-\s*[^-]+$/, '').trim();
       var desc = (item.querySelector('description')||{textContent:''}).textContent.replace(/<[^>]*>/g,'').substring(0,100);
       var pubDate = (item.querySelector('pubDate')||{textContent:''}).textContent;
       var card = document.createElement('div');
       card.className = 'news-card';
-      card.innerHTML = '<div class="news-title">'+title+'</div><div class="news-src">'+(pubDate?pubDate.substring(0,16):'')+' — '+desc+'...</div>';
+      card.innerHTML = '<div class="news-title">'+title+'</div><div class="news-src">'+(pubDate?pubDate.substring(0,16):'')+' — '+desc+'</div>';
       card.onclick = function(){
         document.querySelectorAll('.news-card').forEach(function(c){c.classList.remove('selected');});
         card.classList.add('selected');
@@ -260,7 +278,7 @@ function fetchRSS(){
       list.appendChild(card);
     });
   }).catch(function(e){
-    list.innerHTML = '<div style="color:#ef4444;font-size:11px">Error fetching RSS: '+e.message+'</div>';
+    list.innerHTML = '<div style="color:#ef4444;font-size:11px">RSS Error: '+e.message+'<br>Make sure your Railway server is running.</div>';
   });
 }
 
@@ -279,7 +297,7 @@ function convertNewsToScript(){
 
   fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':claudeKey,'anthropic-version':'2023-06-01'},
+    headers:{'Content-Type':'application/json','x-api-key':claudeKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})
   }).then(function(r){return r.json();})
   .then(function(d){
@@ -677,10 +695,10 @@ function startRender(){
 
   var prog=10;
   var iv=setInterval(function(){
-    prog=Math.min(prog+1.2,88);
+    prog=Math.min(prog+0.8,92);
     renderFill.style.width=prog+'%';
-    renderStatus.textContent='Server rendering... '+Math.round(prog)+'%';
-  },2000);
+    renderStatus.textContent='Server rendering... '+Math.round(prog)+'% (large videos may take 2-3 min)';
+  },3000);
 
   fetch(SERVER+'/render',{
     method:'POST',headers:{'Content-Type':'application/json'},
