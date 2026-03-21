@@ -124,7 +124,7 @@ def concat_all(clips, output_path):
     cmd = ['ffmpeg', '-f', 'concat', '-safe', '0', '-i', list_path,
            '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac',
            '-movflags', '+faststart', '-y', output_path]
-    r = subprocess.run(cmd, capture_output=True, timeout=45)
+    r = subprocess.run(cmd, capture_output=True, timeout=90)
     return output_path if r.returncode == 0 else None
 
 @app.route('/')
