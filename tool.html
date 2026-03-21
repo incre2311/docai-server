@@ -222,14 +222,14 @@ var RSS_FEEDS = {
 function fetchRSS(){
   var feed = RSS_FEEDS[document.getElementById('rssFeed').value];
   var search = document.getElementById('rssSearch').value.toLowerCase().trim();
-  var proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(feed);
+  var proxy = SERVER + '/rss?url=' + encodeURIComponent(feed);
   var list = document.getElementById('newsList');
   list.innerHTML = '<div style="color:#555;font-size:11px;font-family:monospace">Fetching headlines...</div>';
 
-  fetch(proxy).then(function(r){return r.json();})
+  fetch(proxy).then(function(r){return r.text();})
   .then(function(d){
     var parser = new DOMParser();
-    var xml = parser.parseFromString(d.contents, 'text/xml');
+    var xml = parser.parseFromString(d, 'text/xml');
     var items = Array.from(xml.querySelectorAll('item')).slice(0, 20);
     var filtered = search ? items.filter(function(item){
       var t = (item.querySelector('title')||{textContent:''}).textContent.toLowerCase();
@@ -405,10 +405,10 @@ function fetchWikipedia(query){
 
 function fetchGoogleNews(query){
   var rss='https://news.google.com/rss/search?q='+encodeURIComponent(query)+'&hl=en-US&gl=US&ceid=US:en';
-  var proxy='https://api.allorigins.win/get?url='+encodeURIComponent(rss);
-  return fetch(proxy).then(function(r){return r.json();})
+  var proxy=SERVER+'/rss?url='+encodeURIComponent(rss);
+  return fetch(proxy).then(function(r){return r.text();})
   .then(function(d){
-    var xml=new DOMParser().parseFromString(d.contents,'text/xml');
+    var xml=new DOMParser().parseFromString(d,'text/xml');
     var items=xml.querySelectorAll('item');
     if(!items.length)return null;
     var first=items[0];
