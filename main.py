@@ -29,29 +29,23 @@ def download_clip(url, path):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         'Referer': 'https://www.pexels.com/'
     }
-    for attempt in range(2):
-        try:
-            print(f"Download attempt {attempt+1}: {url[:50]}", flush=True)
-            r = requests.get(url, stream=True, timeout=15, headers=headers)
-            if r.status_code == 200:
-                with open(path, 'wb') as f:
-                    for chunk in r.iter_content(chunk_size=8192):
-                        f.write(chunk)
-                if os.path.exists(path) and os.path.getsize(path) > 1000:
-                    print(f"Download OK: {os.path.getsize(path)} bytes", flush=True)
-                    return path
-            print(f"Download failed: {r.status_code}", flush=True)
-        except Exception as e:
-            print(f"Download error: {str(e)}", flush=True)
-        if attempt == 0:
-            time.sleep(1)
+    try:
+        r = requests.get(url, stream=True, timeout=12, headers=headers)
+        if r.status_code == 200:
+            with open(path, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            if os.path.exists(path) and os.path.getsize(path) > 1000:
+                return path
+    except Exception as e:
+        print(f"Download error: {str(e)[:50]}", flush=True)
     return None
 
 def download_image_as_clip(image_url, output_path, duration):
     img_path = output_path.replace('.mp4', '_img.jpg')
     try:
-        headers = {'User-Agent': 'Mozilla/5.0 DocAI/1.0'}
-        r = requests.get(image_url, timeout=20, headers=headers)
+        r = requests.get(image_url, timeout=10,
+                        headers={'User-Agent': 'Mozilla/5.0 DocAI/1.0'})
         if r.status_code == 200:
             with open(img_path, 'wb') as f:
                 f.write(r.content)
@@ -61,20 +55,19 @@ def download_image_as_clip(image_url, output_path, duration):
                     'ffmpeg', '-loop', '1', '-i', img_path,
                     '-vf', (
                         f'scale=8000:-1,'
-                        f'zoompan=z=\'min(zoom+0.0008,1.3)\':d={frames}'
+                        f'zoompan=z=\'min(zoom+0.001,1.3)\':d={frames}'
                         f':x=\'iw/2-(iw/zoom/2)\':y=\'ih/2-(ih/zoom/2)\':s=1280x720:fps=25,'
                         f'setsar=1'
                     ),
                     '-t', str(duration),
                     '-c:v', 'libx264', '-preset', 'ultrafast',
-                    '-pix_fmt', 'yuv420p',
-                    '-y', output_path
+                    '-pix_fmt', 'yuv420p', '-y', output_path
                 ]
-                result = subprocess.run(cmd, capture_output=True, timeout=30)
+                result = subprocess.run(cmd, capture_output=True, timeout=25)
                 if result.returncode == 0:
                     return output_path
     except Exception as e:
-        print(f"Image clip error: {str(e)}", flush=True)
+        print(f"Image clip error: {str(e)[:50]}", flush=True)
     return None
 
 def fast_trim(input_path, output_path, duration):
@@ -85,9 +78,8 @@ def fast_trim(input_path, output_path, duration):
         '-c:v', 'libx264', '-preset', 'ultrafast',
         '-c:a', 'aac', '-y', output_path
     ]
-    result = subprocess.run(cmd, capture_output=True, timeout=25)
+    result = subprocess.run(cmd, capture_output=True, timeout=20)
     if result.returncode != 0:
-        print("Trim error:", result.stderr.decode()[:100], flush=True)
         return None
     return output_path
 
@@ -98,17 +90,16 @@ def fast_text_clip(text, duration, output_path, overlay=None):
         'ffmpeg', '-f', 'lavfi',
         '-i', f'color=c=black:s=1280x720:d={duration}',
         '-vf', f"drawtext=text='{safe}':fontcolor=white:fontsize=34:x=(w-text_w)/2:y=(h-text_h)/2:box=1:boxcolor=black@0.5:boxborderw=10",
-        '-c:v', 'libx264', '-preset', 'ultrafast',
-        '-y', output_path
+        '-c:v', 'libx264', '-preset', 'ultrafast', '-y', output_path
     ]
-    result = subprocess.run(cmd, capture_output=True, timeout=15)
+    result = subprocess.run(cmd, capture_output=True, timeout=12)
     if result.returncode != 0:
         fallback = ['ffmpeg', '-f', 'lavfi', '-i', f'color=c=black:s=1280x720:d={duration}',
                     '-c:v', 'libx264', '-preset', 'ultrafast', '-y', output_path]
-        subprocess.run(fallback, capture_output=True, timeout=10)
+        subprocess.run(fallback, capture_output=True, timeout=8)
     return output_path
 
-def fast_intro(title, output_path, duration=4):
+def fast_intro(title, output_path, duration=3):
     safe = title.replace("'","").replace('"','')[:40]
     cmd = [
         'ffmpeg', '-f', 'lavfi',
@@ -117,84 +108,39 @@ def fast_intro(title, output_path, duration=4):
             f"drawtext=text='{safe}':fontcolor=white:fontsize=52:x=(w-text_w)/2:y=(h-text_h)/2-20,"
             f"drawtext=text='A Documentary':fontcolor=gray:fontsize=20:x=(w-text_w)/2:y=(h-text_h)/2+30"
         ),
-        '-c:v', 'libx264', '-preset', 'ultrafast',
-        '-y', output_path
+        '-c:v', 'libx264', '-preset', 'ultrafast', '-y', output_path
     ]
-    result = subprocess.run(cmd, capture_output=True, timeout=15)
+    result = subprocess.run(cmd, capture_output=True, timeout=12)
     if result.returncode != 0:
         fallback = ['ffmpeg', '-f', 'lavfi', '-i', f'color=c=black:s=1280x720:d={duration}',
                     '-c:v', 'libx264', '-preset', 'ultrafast', '-y', output_path]
-        subprocess.run(fallback, capture_output=True, timeout=10)
+        subprocess.run(fallback, capture_output=True, timeout=8)
     return output_path
 
-# FIX 3: Download real music from Pixabay free CDN
 def download_background_music(output_path, duration):
     music_urls = [
         "https://cdn.pixabay.com/audio/2022/10/16/audio_127819a22a.mp3",
         "https://cdn.pixabay.com/audio/2022/08/23/audio_d16737dc28.mp3",
-        "https://cdn.pixabay.com/audio/2022/03/15/audio_8b55e1f360.mp3",
     ]
     for url in music_urls:
         try:
-            r = requests.get(url, timeout=10)
+            r = requests.get(url, timeout=8)
             if r.status_code == 200 and len(r.content) > 10000:
                 raw_path = output_path.replace('.aac', '_raw.mp3')
                 with open(raw_path, 'wb') as f:
                     f.write(r.content)
-                # Convert to aac and trim to duration
-                cmd = [
-                    'ffmpeg', '-i', raw_path,
-                    '-t', str(duration),
-                    '-c:a', 'aac', '-b:a', '64k',
-                    '-y', output_path
-                ]
-                result = subprocess.run(cmd, capture_output=True, timeout=20)
+                cmd = ['ffmpeg', '-i', raw_path, '-t', str(duration),
+                       '-c:a', 'aac', '-b:a', '64k', '-y', output_path]
+                result = subprocess.run(cmd, capture_output=True, timeout=15)
                 if result.returncode == 0:
-                    print("Music downloaded OK", flush=True)
                     return output_path
-        except Exception as e:
-            print(f"Music download error: {str(e)}", flush=True)
+        except:
             continue
-    # Fallback to generated tone if all downloads fail
-    return generate_ambient_audio(output_path, duration)
-
-def generate_ambient_audio(output_path, duration):
-    cmd = [
-        'ffmpeg',
-        '-f', 'lavfi', '-i', f'sine=frequency=60:duration={duration}',
-        '-f', 'lavfi', '-i', f'sine=frequency=80:duration={duration}',
-        '-filter_complex', '[0:a]volume=0.06[a1];[1:a]volume=0.04[a2];[a1][a2]amix=inputs=2[aout]',
-        '-map', '[aout]',
-        '-c:a', 'aac', '-b:a', '64k',
-        '-y', output_path
-    ]
-    result = subprocess.run(cmd, capture_output=True, timeout=20)
-    if result.returncode != 0:
-        fallback = ['ffmpeg', '-f', 'lavfi', '-i', f'sine=frequency=55:duration={duration}',
-                    '-af', 'volume=0.05', '-c:a', 'aac', '-b:a', '64k', '-y', output_path]
-        subprocess.run(fallback, capture_output=True, timeout=15)
+    # Fallback: generate simple tone
+    cmd = ['ffmpeg', '-f', 'lavfi', '-i', f'sine=frequency=60:duration={duration}',
+           '-af', 'volume=0.05', '-c:a', 'aac', '-b:a', '64k', '-y', output_path]
+    subprocess.run(cmd, capture_output=True, timeout=10)
     return output_path
-
-def mix_narration_into_clip(video_path, narration_url, output_path, duration):
-    narration_path = video_path.replace('.mp4', '_narration.mp3')
-    try:
-        r = requests.get(narration_url, timeout=20)
-        if r.status_code == 200:
-            with open(narration_path, 'wb') as f:
-                f.write(r.content)
-            cmd = [
-                'ffmpeg', '-i', video_path, '-i', narration_path,
-                '-filter_complex', '[1:a]volume=1.0[narr];[0:a]volume=0.1[bg];[narr][bg]amix=inputs=2:duration=first[aout]',
-                '-map', '0:v', '-map', '[aout]',
-                '-c:v', 'copy', '-c:a', 'aac',
-                '-t', str(duration), '-y', output_path
-            ]
-            result = subprocess.run(cmd, capture_output=True, timeout=30)
-            if result.returncode == 0:
-                return output_path
-    except Exception as e:
-        print(f"Narration mix error: {str(e)}", flush=True)
-    return video_path
 
 def mix_ambient_into_final(video_path, audio_path, output_path, duration):
     cmd = [
@@ -204,7 +150,7 @@ def mix_ambient_into_final(video_path, audio_path, output_path, duration):
         '-c:v', 'copy', '-c:a', 'aac', '-b:a', '128k',
         '-t', str(duration), '-y', output_path
     ]
-    result = subprocess.run(cmd, capture_output=True, timeout=30)
+    result = subprocess.run(cmd, capture_output=True, timeout=25)
     if result.returncode != 0:
         return video_path
     return output_path
@@ -213,7 +159,6 @@ def fast_concat(clip_paths, output_path):
     valid = [c for c in clip_paths if os.path.exists(c) and os.path.getsize(c) > 100]
     if not valid:
         return None
-    print(f"Concatenating {len(valid)} clips", flush=True)
     list_path = os.path.join(WORK_DIR, 'concat_list.txt')
     with open(list_path, 'w') as f:
         for clip in valid:
@@ -221,12 +166,11 @@ def fast_concat(clip_paths, output_path):
     cmd = [
         'ffmpeg', '-f', 'concat', '-safe', '0', '-i', list_path,
         '-c:v', 'libx264', '-preset', 'ultrafast',
-        '-c:a', 'aac', '-movflags', '+faststart',
-        '-y', output_path
+        '-c:a', 'aac', '-movflags', '+faststart', '-y', output_path
     ]
-    result = subprocess.run(cmd, capture_output=True, timeout=60)
+    result = subprocess.run(cmd, capture_output=True, timeout=45)
     if result.returncode != 0:
-        print("Concat error:", result.stderr.decode()[:200], flush=True)
+        print("Concat error:", result.stderr.decode()[:150], flush=True)
         return None
     return output_path
 
@@ -241,15 +185,14 @@ def index():
 def health():
     return jsonify({'status': 'ok', 'message': 'DOC-AI Server running'})
 
-# NEW ROUTE: RSS proxy to fix CORS issue
 @app.route('/rss', methods=['GET'])
 def rss_proxy():
     url = request.args.get('url', '')
     if not url:
-        return jsonify({'error': 'No URL provided'}), 400
+        return jsonify({'error': 'No URL'}), 400
     try:
         headers = {'User-Agent': 'Mozilla/5.0 (compatible; DocAI/1.0)'}
-        r = requests.get(url, timeout=15, headers=headers)
+        r = requests.get(url, timeout=10, headers=headers)
         return Response(r.content, mimetype='application/xml',
                        headers={'Access-Control-Allow-Origin': '*'})
     except Exception as e:
@@ -264,6 +207,14 @@ def render():
         job_id = data.get('jobId', str(uuid.uuid4()))
         scenes = data.get('scenes', [])
         title = data.get('title', 'Documentary')
+
+        # Hard limit — max 15 scenes per render to stay under timeout
+        # User can render in parts for longer videos
+        MAX_SCENES = 15
+        if len(scenes) > MAX_SCENES:
+            print(f"Limiting {len(scenes)} scenes to {MAX_SCENES}", flush=True)
+            scenes = scenes[:MAX_SCENES]
+
         print(f"RENDER - {len(scenes)} scenes - {title}", flush=True)
 
         if not scenes:
@@ -272,47 +223,36 @@ def render():
         job_dir = os.path.join(WORK_DIR, job_id)
         os.makedirs(job_dir, exist_ok=True)
         all_clips = []
-        total_duration = 4
+        total_duration = 3
 
         # INTRO
         intro_path = os.path.join(job_dir, '00_intro.mp4')
-        fast_intro(title, intro_path, duration=4)
+        fast_intro(title, intro_path, duration=3)
         if os.path.exists(intro_path):
             all_clips.append(intro_path)
 
-        # SCENES — process max 25 to avoid timeout
-        if len(scenes) > 25:
-            print(f"Limiting to 25 scenes to avoid timeout (total: {len(scenes)})", flush=True)
-            scenes = scenes[:25]
-
+        # SCENES
         for i, scene in enumerate(scenes):
             scene_type = scene.get('type', 'neutral')
-            duration = max(3, min(scene.get('duration', 5), 20))
+            duration = max(3, min(scene.get('duration', 5), 15))
             footage_url = scene.get('footageUrl')
             image_url = scene.get('imageUrl')
             timestamp_text = scene.get('timestampText', f'Scene {i+1}')
             narration_text = scene.get('narrationText', f'Scene {i+1}')
-            narration_url = scene.get('narrationUrl')
             overlay = scene.get('overlay')
-
-            # FIX 2: Always use i+1 for correct order
             order = i + 1
 
-            print(f"Scene {order}/{len(scenes)} [{scene_type}] {duration}s url={'YES' if footage_url else 'NO'}", flush=True)
-
+            print(f"Scene {order}/{len(scenes)} [{scene_type}] {duration}s", flush=True)
             processed_path = os.path.join(job_dir, f'scene_{str(order).zfill(2)}.mp4')
-            final_scene_path = os.path.join(job_dir, f'final_scene_{str(order).zfill(2)}.mp4')
 
             if scene_type == 'timestamp':
                 fast_text_clip(timestamp_text, duration, processed_path)
 
-            # FIX 1: No URL blocking — always try footage_url
             elif footage_url:
                 local_path = os.path.join(job_dir, f'local_{str(order).zfill(2)}.mp4')
                 dl = download_clip(footage_url, local_path)
                 if dl and os.path.exists(local_path) and os.path.getsize(local_path) > 1000:
                     result = fast_trim(local_path, processed_path, duration)
-                    # FIX 4: Strong fallback if trim fails
                     if not result:
                         fast_text_clip(narration_text[:50], duration, processed_path, overlay=overlay)
                 else:
@@ -327,24 +267,13 @@ def render():
                 fast_text_clip(overlay[:80], duration, processed_path, overlay=overlay)
 
             else:
-                # FIX 4: Always create something — never skip
                 fast_text_clip(narration_text[:50], duration, processed_path)
 
-            # Mix narration if available
-            clip_to_use = processed_path
-            if os.path.exists(processed_path) and narration_url:
-                mix_result = mix_narration_into_clip(
-                    processed_path, narration_url, final_scene_path, duration
-                )
-                if os.path.exists(final_scene_path):
-                    clip_to_use = final_scene_path
-
-            if os.path.exists(clip_to_use) and os.path.getsize(clip_to_use) > 100:
-                all_clips.append(clip_to_use)
+            if os.path.exists(processed_path) and os.path.getsize(processed_path) > 100:
+                all_clips.append(processed_path)
                 total_duration += duration
             else:
-                # Emergency fallback
-                print(f"Scene {order} FAILED — emergency fallback", flush=True)
+                print(f"Scene {order} FAILED - fallback", flush=True)
                 fast_text_clip(f'Scene {order}', duration, processed_path)
                 if os.path.exists(processed_path):
                     all_clips.append(processed_path)
@@ -352,10 +281,10 @@ def render():
 
         # OUTRO
         outro_path = os.path.join(job_dir, 'outro.mp4')
-        fast_text_clip('', 3, outro_path)
+        fast_text_clip('', 2, outro_path)
         if os.path.exists(outro_path):
             all_clips.append(outro_path)
-            total_duration += 3
+            total_duration += 2
 
         # CONCAT
         output_path = os.path.join(job_dir, f'documentary_{job_id}.mp4')
@@ -363,7 +292,7 @@ def render():
         if not concat_result or not os.path.exists(output_path):
             return jsonify({'error': 'Concat failed'}), 500
 
-        # FIX 3: Download real background music
+        # MUSIC
         music_path = os.path.join(job_dir, 'music.aac')
         final_path = os.path.join(job_dir, f'final_{job_id}.mp4')
         music_result = download_background_music(music_path, total_duration)
@@ -371,7 +300,6 @@ def render():
             mixed = mix_ambient_into_final(output_path, music_path, final_path, total_duration)
             if os.path.exists(final_path):
                 output_path = final_path
-                print("Music mixed OK", flush=True)
 
         size_mb = os.path.getsize(output_path) / 1024 / 1024
         print(f"RENDER COMPLETE - {size_mb:.1f}MB - {total_duration}s", flush=True)
@@ -383,7 +311,7 @@ def render():
         print(f"Render error: {str(e)}", flush=True)
         return jsonify({'error': str(e)}), 500
 
-print("Routes registered. Starting server...", flush=True)
+print("Routes registered.", flush=True)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
