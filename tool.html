@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -7,61 +7,60 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#f0f0f0;font-family:system-ui,sans-serif;padding:20px;min-height:100vh}
-h1{font-size:28px;color:#e8ff00;letter-spacing:2px;margin-bottom:4px}
-.sub{font-size:11px;color:#444;letter-spacing:3px;margin-bottom:24px}
-.box{background:#111;border:1px solid #222;border-radius:10px;padding:16px;margin-bottom:16px}
-.box h2{font-size:13px;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+h1{font-size:26px;color:#e8ff00;letter-spacing:2px;margin-bottom:4px}
+.sub{font-size:11px;color:#444;letter-spacing:3px;margin-bottom:20px}
+.box{background:#111;border:1px solid #222;border-radius:10px;padding:16px;margin-bottom:14px}
+.box h2{font-size:12px;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .pn{background:#e8ff00;color:#000;font-size:10px;padding:2px 6px;border-radius:3px;font-weight:700}
-textarea,input,select{width:100%;background:#181818;border:1px solid #333;border-radius:6px;color:#f0f0f0;padding:10px;font-size:13px;font-family:inherit;outline:none;margin-bottom:10px}
-textarea{resize:vertical;min-height:150px;line-height:1.6}
-.btn{background:#e8ff00;color:#000;border:none;border-radius:6px;padding:12px 20px;font-size:13px;font-weight:700;cursor:pointer;width:100%;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.btn:disabled{opacity:0.5;cursor:not-allowed}
-.btn-purple{background:#7c3aed;color:white}
-.btn-blue{background:#3b82f6;color:white}
-.btn-green{background:#22c55e;color:black}
-.btn-sm{background:transparent;color:#888;border:1px solid #333;padding:6px 12px;width:auto;font-size:11px;margin:0;border-radius:4px;cursor:pointer}
-.status{font-size:11px;font-family:monospace;padding:8px 12px;border-radius:5px;background:#181818;border:1px solid #333;margin-bottom:10px;line-height:1.5}
-.status.ok{border-color:#22c55e;color:#22c55e}
-.status.error{border-color:#ef4444;color:#ef4444}
-.status.loading{border-color:#f97316;color:#f97316}
-.sc{background:#181818;border:1px solid #2a2a2a;border-radius:8px;padding:12px;margin-bottom:8px}
-.sc.has-footage{border-left:3px solid #22c55e}
-.sc.no-footage{border-left:3px solid #444}
-.sn{font-size:10px;font-family:monospace;color:#e8ff00;margin-bottom:4px}
-.badge{font-size:10px;padding:2px 8px;border-radius:3px;display:inline-block;margin-bottom:6px;margin-right:4px}
-.tense{background:rgba(239,68,68,0.2);color:#ef4444;border:1px solid rgba(239,68,68,0.3)}
-.emotional{background:rgba(168,85,247,0.2);color:#a855f7;border:1px solid rgba(168,85,247,0.3)}
-.neutral{background:rgba(136,136,136,0.2);color:#888;border:1px solid #333}
-.timestamp{background:rgba(232,255,0,0.2);color:#e8ff00;border:1px solid rgba(232,255,0,0.3)}
-.evidence{background:rgba(59,130,246,0.2);color:#3b82f6;border:1px solid rgba(59,130,246,0.3)}
-.abs{background:rgba(245,158,11,0.2);color:#f59e0b;border:1px solid rgba(245,158,11,0.3)}
-.st{font-size:12px;color:#888;font-style:italic;margin-bottom:4px}
-.sd{font-size:11px;font-family:monospace;color:#555;margin-bottom:4px}
-.prog{height:4px;background:#222;border-radius:2px;margin:10px 0;overflow:hidden}
-.prog-fill{height:100%;background:#e8ff00;border-radius:2px;width:0%;transition:width 0.3s}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ft-ok{font-size:11px;color:#22c55e;font-family:monospace;margin-top:4px}
-.ft-warn{font-size:11px;color:#f59e0b;margin-top:4px}
-.ft-none{font-size:11px;color:#555;margin-top:4px}
-.rb{background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:8px;padding:16px;text-align:center;margin-top:10px}
-.leg{display:flex;gap:10px;flex-wrap:wrap;font-size:10px;font-family:monospace;color:#555;margin-bottom:12px}
-.dbg{background:#050505;border:1px solid #1a1a1a;border-radius:6px;padding:8px;font-family:monospace;font-size:10px;color:#444;margin-top:8px;max-height:80px;overflow-y:auto;line-height:1.4}
-.news-card{background:#0d1117;border:1px solid #1a2332;border-radius:6px;padding:10px;margin-bottom:8px;cursor:pointer;transition:border-color 0.2s}
-.news-card:hover{border-color:#3b82f6}
-.news-card.selected{border-color:#e8ff00}
-.news-title{font-size:13px;color:#f0f0f0;margin-bottom:4px}
-.news-src{font-size:10px;color:#555;font-family:monospace}
-.vr{background:#181818;border:1px solid #2a2a2a;border-radius:6px;padding:10px 12px;margin-bottom:8px;display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center}
-.vn{font-family:monospace;font-size:18px;color:#333;line-height:1}
-.vi{display:flex;flex-direction:column;gap:3px;min-width:0}
-.vt{font-size:12px;color:#888}
-.vtx{font-size:11px;color:#555;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.va{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-.vs{font-family:monospace;font-size:10px;padding:2px 7px;border-radius:3px;border:1px solid #333;color:#555;white-space:nowrap}
+textarea,input,select{width:100%;background:#181818;border:1px solid #333;border-radius:6px;color:#f0f0f0;padding:9px;font-size:13px;font-family:inherit;outline:none;margin-bottom:8px}
+textarea{resize:vertical;min-height:140px;line-height:1.6}
+.btn{background:#e8ff00;color:#000;border:none;border-radius:6px;padding:11px 18px;font-size:13px;font-weight:700;cursor:pointer;width:100%;text-transform:uppercase;margin-bottom:8px}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.btn-p{background:#7c3aed;color:white}
+.btn-b{background:#3b82f6;color:white}
+.btn-g{background:#22c55e;color:black}
+.btn-sm{background:transparent;color:#888;border:1px solid #333;padding:5px 10px;width:auto;font-size:11px;border-radius:4px;cursor:pointer}
+.st{font-size:11px;font-family:monospace;padding:8px 12px;border-radius:5px;background:#181818;border:1px solid #333;margin-bottom:8px;line-height:1.5}
+.st.ok{border-color:#22c55e;color:#22c55e}
+.st.err{border-color:#ef4444;color:#ef4444}
+.st.ld{border-color:#f97316;color:#f97316}
+.sc{background:#181818;border-left:3px solid #333;border-radius:6px;padding:10px 12px;margin-bottom:6px}
+.sc.ok{border-left-color:#22c55e}
+.sc.no{border-left-color:#444}
+.sn{font-size:10px;font-family:monospace;color:#e8ff00;margin-bottom:3px}
+.bdg{font-size:10px;padding:1px 7px;border-radius:3px;display:inline-block;margin-right:4px;margin-bottom:4px}
+.tense{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3)}
+.emotional{background:rgba(168,85,247,0.15);color:#a855f7;border:1px solid rgba(168,85,247,0.3)}
+.neutral{background:rgba(100,100,100,0.15);color:#888;border:1px solid #333}
+.timestamp{background:rgba(232,255,0,0.15);color:#e8ff00;border:1px solid rgba(232,255,0,0.3)}
+.evidence{background:rgba(59,130,246,0.15);color:#3b82f6;border:1px solid rgba(59,130,246,0.3)}
+.stxt{font-size:12px;color:#888;font-style:italic;margin-bottom:3px}
+.sdur{font-size:11px;font-family:monospace;color:#555}
+.prg{height:3px;background:#222;border-radius:2px;margin:8px 0;overflow:hidden}
+.pf{height:100%;background:#e8ff00;border-radius:2px;width:0%;transition:width 0.3s}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ft-ok{font-size:11px;color:#22c55e;font-family:monospace;margin-top:3px}
+.ft-w{font-size:11px;color:#f59e0b;margin-top:3px}
+.ft-n{font-size:11px;color:#555;margin-top:3px}
+.rb{background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:8px;padding:14px;text-align:center;margin-top:8px}
+.leg{display:flex;gap:8px;flex-wrap:wrap;font-size:10px;font-family:monospace;color:#555;margin-bottom:10px}
+.dbg{background:#050505;border:1px solid #111;border-radius:5px;padding:8px;font-family:monospace;font-size:10px;color:#444;margin-top:8px;max-height:70px;overflow-y:auto;line-height:1.4}
+.nc{background:#0d1117;border:1px solid #1a2332;border-radius:6px;padding:10px;margin-bottom:6px;cursor:pointer}
+.nc:hover,.nc.sel{border-color:#e8ff00}
+.nt{font-size:13px;color:#f0f0f0;margin-bottom:3px}
+.ns{font-size:10px;color:#555;font-family:monospace}
+.vr{background:#181818;border:1px solid #222;border-radius:6px;padding:9px 12px;margin-bottom:6px;display:grid;grid-template-columns:26px 1fr auto;gap:8px;align-items:center}
+.vn{font-family:monospace;font-size:16px;color:#333}
+.vi{min-width:0}
+.vt{font-size:11px;color:#888}
+.vx{font-size:11px;color:#555;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.va{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.vs{font-family:monospace;font-size:10px;padding:2px 6px;border-radius:3px;border:1px solid #333;color:#555;white-space:nowrap}
 .vs.done{border-color:#22c55e;color:#22c55e}
-.vs.gen{border-color:#f97316;color:#f97316}
+.vs.gen{border-color:#f97316;color:#f97316;animation:pulse 1s infinite}
 .vs.err{border-color:#ef4444;color:#ef4444}
-audio{height:26px;max-width:150px;accent-color:#e8ff00}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+audio{height:24px;max-width:130px;accent-color:#e8ff00}
 </style>
 </head>
 <body>
@@ -70,83 +69,75 @@ audio{height:26px;max-width:150px;accent-color:#e8ff00}
 
 <div class="box">
   <h2>Server</h2>
-  <div class="status" id="srvStatus">Checking...</div>
+  <div class="st" id="srv">Checking...</div>
   <button class="btn-sm" onclick="checkServer()">Retry</button>
 </div>
 
-<!-- PHASE 0: NEWS RSS FETCH -->
+<!-- PHASE 00: RSS NEWS -->
 <div class="box">
   <h2><span class="pn">00</span> Fetch News (Optional)</h2>
-  <div style="font-size:11px;color:#555;margin-bottom:10px">Fetch real headlines from BBC/Reuters RSS — free, no API key needed. Or skip and paste your own script below.</div>
+  <div style="font-size:11px;color:#555;margin-bottom:8px">Search real headlines — free, no API key. Or skip and paste script below.</div>
   <div class="g2">
-    <select id="rssFeed" style="margin-bottom:0">
+    <select id="rssFeed">
       <option value="bbc">BBC News</option>
       <option value="reuters">Reuters</option>
       <option value="guardian">The Guardian</option>
-      <option value="ap">AP News</option>
     </select>
-    <input id="rssSearch" placeholder="Topic to search (e.g. Bitcoin)" style="margin-bottom:0">
+    <input id="rssQ" placeholder="Topic: bitcoin, crime, war...">
   </div>
-  <button class="btn btn-blue" style="margin-top:10px" onclick="fetchRSS()">Fetch Headlines</button>
-  <div id="newsList" style="margin-top:10px"></div>
-  <div id="selectedNews" style="display:none;margin-top:10px">
-    <div style="font-size:11px;color:#888;margin-bottom:6px">Selected article — Claude will convert this to a documentary script:</div>
-    <div class="status" id="selectedNewsTitle"></div>
-    <button class="btn btn-green" onclick="convertNewsToScript()">Convert to Script via Claude AI</button>
-    <div class="status" id="convertStatus" style="display:none"></div>
+  <button class="btn btn-b" onclick="fetchNews()">Fetch Headlines</button>
+  <div id="newsList"></div>
+  <div id="selNews" style="display:none;margin-top:8px">
+    <div class="st" id="selTitle"></div>
+    <button class="btn btn-g" onclick="news2Script()">Convert to Script via Claude</button>
+    <div class="st" id="cvtSt" style="display:none"></div>
   </div>
 </div>
 
-<!-- PHASE 1: SCRIPT -->
+<!-- PHASE 01: SCRIPT + KEYS -->
 <div class="box">
   <h2><span class="pn">01</span> Script + API Keys</h2>
-  <div class="leg">
-    <span>.. = scene</span><span>— = 1s pause</span><span>Date/Time = timestamp</span>
-  </div>
-  <textarea id="scriptInput" placeholder="Paste your script here. Separate scenes with ..&#10;&#10;Or use Phase 00 above to fetch and auto-generate from news."></textarea>
-  <div style="font-size:11px;color:#555;margin-bottom:12px" id="sceneCount">0 scenes</div>
-
-  <div style="font-size:11px;color:#888;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Footage</div>
+  <div class="leg"><span>.. = scene</span><span>— = 1s pause</span><span>Date/Time = timestamp</span></div>
+  <textarea id="script" placeholder="Paste your script. Separate scenes with .."></textarea>
+  <div style="font-size:11px;color:#555;margin-bottom:10px" id="scCount">0 scenes</div>
+  <div style="font-size:11px;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px">Footage Sources</div>
   <div class="g2">
-    <input type="password" id="pexelsKey" placeholder="Pexels API Key">
-    <input type="password" id="pixabayKey" placeholder="Pixabay API Key">
+    <input type="password" id="pxKey" placeholder="Pexels API Key">
+    <input type="password" id="pbKey" placeholder="Pixabay API Key">
   </div>
-
-  <div style="font-size:11px;color:#888;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">AI Research + Script Generation</div>
-  <input type="password" id="claudeKey" placeholder="Anthropic API Key (for news conversion + smart fallback)">
-
-  <div style="font-size:11px;color:#888;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Narration</div>
-  <div class="g2">
-    <input type="password" id="elKey" placeholder="ElevenLabs API Key">
-    <div style="display:flex;gap:8px;margin-bottom:10px">
-      <select id="voiceSelect" style="margin-bottom:0;flex:1"><option value="">Load voices</option></select>
+  <div style="font-size:11px;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px">AI (Claude)</div>
+  <input type="password" id="aiKey" placeholder="Anthropic API Key">
+  <div style="font-size:11px;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px">Narration (ElevenLabs)</div>
+  <div class="g2" style="margin-bottom:0">
+    <input type="password" id="elKey" placeholder="ElevenLabs API Key" style="margin-bottom:0">
+    <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px">
+      <select id="voiceSel" style="margin-bottom:0;flex:1"><option value="">Load voices</option></select>
       <button class="btn-sm" onclick="loadVoices()">Load</button>
     </div>
   </div>
-
-  <button class="btn" onclick="analyzeAndFetch()">Analyze + Fetch All Footage</button>
-  <div class="prog"><div class="prog-fill" id="p1Fill"></div></div>
-  <div class="status" id="p1Status" style="display:none"></div>
+  <button class="btn" onclick="analyze()">Analyze + Fetch Footage</button>
+  <div class="prg"><div class="pf" id="p1f"></div></div>
+  <div class="st" id="p1st" style="display:none"></div>
 </div>
 
 <!-- SCENES -->
 <div id="scenesOut" style="display:none">
   <div class="box">
-    <h2><span class="pn">02</span> Scenes <span id="valBadge" style="font-size:10px;padding:2px 8px;border-radius:3px;margin-left:4px"></span></h2>
-    <div id="srcSummary" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
-    <div id="scenesList"></div>
-    <div class="dbg" id="dbgBox" style="display:none"></div>
+    <h2><span class="pn">02</span> Scenes <span id="vBadge" style="font-size:10px;padding:2px 8px;border-radius:3px;margin-left:4px"></span></h2>
+    <div id="srcSum" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px"></div>
+    <div id="scList"></div>
+    <div class="dbg" id="dbg" style="display:none"></div>
   </div>
 </div>
 
 <!-- NARRATION -->
-<div id="narSection" style="display:none">
+<div id="narSec" style="display:none">
   <div class="box">
     <h2><span class="pn">03</span> Narration</h2>
-    <div class="status" id="voStatus">Load ElevenLabs voices to generate narration per scene</div>
-    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-      <button class="btn btn-blue" id="genAllVoBtn" onclick="generateAllVO()" style="flex:1">Generate All Narration</button>
-      <button class="btn-sm" id="dlAllVoBtn" onclick="downloadAllVO()" style="display:none">Download All MP3</button>
+    <div class="st" id="voSt">Enter ElevenLabs key and load voices to generate narration</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <button class="btn btn-b" id="genAllBtn" onclick="genAllVO()" style="flex:1">Generate All Narration</button>
+      <button class="btn-sm" id="dlAllBtn" onclick="dlAllVO()" style="display:none">Download All</button>
     </div>
     <div id="voList"></div>
   </div>
@@ -156,211 +147,138 @@ audio{height:26px;max-width:150px;accent-color:#e8ff00}
 <div id="renderSec" style="display:none">
   <div class="box">
     <h2><span class="pn">04</span> Render</h2>
-    <div style="background:#181818;border:1px solid #333;border-radius:6px;padding:12px;margin-bottom:12px;font-size:12px;color:#888;line-height:1.8" id="renderSum"></div>
+    <div style="background:#181818;border:1px solid #333;border-radius:6px;padding:10px;margin-bottom:10px;font-size:12px;color:#888;line-height:1.7" id="rSum"></div>
     <input type="text" id="docTitle" placeholder="Documentary Title">
-    <button class="btn btn-purple" id="renderBtn" onclick="startRender()">Render Documentary</button>
-    <div class="prog"><div class="prog-fill" id="renderFill"></div></div>
-    <div class="status" id="renderStatus" style="display:none"></div>
-    <div id="renderResult"></div>
+    <button class="btn btn-p" id="rBtn" onclick="startRender()">Render Documentary</button>
+    <div class="prg"><div class="pf" id="rFill"></div></div>
+    <div class="st" id="rSt" style="display:none"></div>
+    <div id="rResult"></div>
   </div>
 </div>
 
 <script>
-var SERVER = 'https://docai-server-production.up.railway.app';
+var S = 'https://docai-server-production.up.railway.app';
+var TENSE = ['gun','bomb','war','fight','chase','arrest','raid','shoot','attack','cartel','kill','murder','crime','fbi','police','swat','military','weapon','terror','sentenced','explosion'];
+var EMOT = ['suicide','funeral','grief','loss','cry','death','tears','tragedy','pain','alone','family','mother','father','love','goodbye','broken','mourn','pardoned'];
+var EVID = ['according','reported','billion','million','percent','evidence','revealed','investigation','confirmed','sentenced','conviction','verdict','statistics'];
+var DATE = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+var FALLBACKS = ['city street people','ocean waves sunset','mountain aerial','rain window night','highway road cinematic','crowd protest','government building','prison exterior','courtroom interior','newspaper press','stock market trading','dark forest path','abandoned building','police car night','storm clouds dramatic','library books','computer hacker dark','money financial','hospital corridor','airport terminal'];
 
-var TENSE_KW = ['gun','bomb','war','fight','chase','arrest','raid','shoot','attack','cartel','hitman','kill','murder','crime','fbi','cia','police','swat','escape','military','weapon','terror','collapsed','explosion','sentenced'];
-var EMOTIONAL_KW = ['suicide','funeral','grief','loss','cry','death','tears','tragedy','pain','alone','family','mother','father','love','goodbye','broken','mourn','lost','pardoned'];
-var EVIDENCE_KW = ['according','reported','statistics','billion','million','percent','evidence','revealed','investigation','confirmed','classified','leaked','transactions','sentenced','conviction','verdict'];
-var DATE_KW = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+var scenes=[], ftData={}, voData={}, blob=null, dbgLog=[];
+var selArt=null;
 
-// 20 unique fallback queries — different for each scene index
-var FALLBACKS = [
-  'city street people walking','ocean waves dramatic sunset',
-  'mountain aerial landscape','rain window dark night',
-  'empty highway road cinematic','crowd protest demonstration',
-  'government building exterior','prison exterior walls fence',
-  'courtroom justice interior','newspaper front page',
-  'stock market trading screens','dark forest path trees',
-  'abandoned building urban decay','police car lights night',
-  'sunset dramatic storm clouds','library books study reading',
-  'computer screen hacker dark','money cash financial desk',
-  'hospital corridor medical','airport terminal crowd travel'
-];
-
-var ABSTRACT_RE = [
-  /^in a world/i,/^imagine/i,/^what if/i,/^the story/i,/^this is the/i,
-  /^for decades/i,/^for years/i,/^nobody knew/i,/^but behind/i,
-  /^something was/i,/^at its peak/i,/^they called/i,/^his name/i,
-  /^her name/i,/^the bitcoin/i,/^a visionary/i,/^was he/i,/^the comment/i
-];
-
-var scenes=[], footageData={}, audioBlobs={}, renderedBlob=null, dbgLog=[];
-var selectedArticle = null;
-
-function log(m){
-  dbgLog.push(m);
-  var b=document.getElementById('dbgBox');
-  if(b){b.style.display='block';b.textContent=dbgLog.slice(-12).join('\n');b.scrollTop=b.scrollHeight;}
+// FIX 5: Save/restore API keys with localStorage
+function saveKey(id){localStorage.setItem('dk_'+id,document.getElementById(id).value);}
+function loadKeys(){
+  ['pxKey','pbKey','aiKey','elKey'].forEach(function(id){
+    var v=localStorage.getItem('dk_'+id);
+    if(v){var el=document.getElementById(id);if(el)el.value=v;}
+  });
 }
+['pxKey','pbKey','aiKey','elKey'].forEach(function(id){
+  document.addEventListener('DOMContentLoaded',function(){
+    var el=document.getElementById(id);
+    if(el)el.addEventListener('input',function(){saveKey(id);});
+  });
+});
+
+function log(m){dbgLog.push(m);var b=document.getElementById('dbg');if(b){b.style.display='block';b.textContent=dbgLog.slice(-10).join('\n');b.scrollTop=b.scrollHeight;}}
 
 function checkServer(){
-  var el=document.getElementById('srvStatus');
-  el.textContent='Checking...';el.className='status loading';
-  fetch(SERVER+'/health').then(function(r){return r.json();})
-  .then(function(d){el.textContent='OK - '+d.message;el.className='status ok';})
-  .catch(function(e){el.textContent='Error: '+e.message;el.className='status error';});
+  var el=document.getElementById('srv');
+  el.textContent='Checking...';el.className='st ld';
+  fetch(S+'/health').then(function(r){return r.json();})
+  .then(function(d){el.textContent='OK - '+d.message;el.className='st ok';})
+  .catch(function(e){el.textContent='Error: '+e.message;el.className='st err';});
 }
 
-// ── RSS FEEDS
-var RSS_FEEDS = {
-  bbc: 'https://feeds.bbci.co.uk/news/rss.xml',
-  reuters: 'https://feeds.reuters.com/reuters/topNews',
-  guardian: 'https://www.theguardian.com/world/rss',
-  ap: 'https://rsshub.app/apnews/topics/apf-topnews'
-};
+var RSS={bbc:'https://feeds.bbci.co.uk/news/rss.xml',reuters:'https://feeds.reuters.com/reuters/topNews',guardian:'https://www.theguardian.com/world/rss'};
 
-function fetchRSS(){
-  var feedKey = document.getElementById('rssFeed').value;
-  var search = document.getElementById('rssSearch').value.toLowerCase().trim();
-  var list = document.getElementById('newsList');
-  list.innerHTML = '<div style="color:#f97316;font-size:11px;font-family:monospace">Fetching headlines...</div>';
+function fetchNews(){
+  var q=document.getElementById('rssQ').value.trim();
+  var list=document.getElementById('newsList');
+  list.innerHTML='<div style="color:#f97316;font-size:11px;font-family:monospace">Fetching...</div>';
 
-  // Use Google News search directly - more reliable than RSS
-  var googleNewsUrl = 'https://news.google.com/rss/search?q=' + encodeURIComponent(search||feedKey) + '&hl=en-US&gl=US&ceid=US:en';
-  var proxyUrl = SERVER + '/rss?url=' + encodeURIComponent(googleNewsUrl);
+  var url = q
+    ? 'https://news.google.com/rss/search?q='+encodeURIComponent(q)+'&hl=en-US&gl=US&ceid=US:en'
+    : RSS[document.getElementById('rssFeed').value];
 
-  fetch(proxyUrl).then(function(r){
-    if(!r.ok) throw new Error('Server error '+r.status);
-    return r.text();
-  }).then(function(d){
-    var parser = new DOMParser();
-    var xml = parser.parseFromString(d, 'text/xml');
-    var items = Array.from(xml.querySelectorAll('item'));
-
-    if(!items.length){
-      // Try RSS feed as fallback
-      var feedUrl = RSS_FEEDS[feedKey];
-      var fallbackProxy = SERVER + '/rss?url=' + encodeURIComponent(feedUrl);
-      return fetch(fallbackProxy).then(function(r2){return r2.text();}).then(function(d2){
-        var xml2 = new DOMParser().parseFromString(d2, 'text/xml');
-        return Array.from(xml2.querySelectorAll('item'));
-      });
-    }
-    return items;
-  }).then(function(items){
-    if(!items||!items.length){
-      list.innerHTML = '<div style="color:#ef4444;font-size:11px">No articles found for "'+search+'". Try: bitcoin, trump, AI, war, crime</div>';
-      return;
-    }
-
-    var filtered = search ? items.filter(function(item){
-      var t = (item.querySelector('title')||{textContent:''}).textContent.toLowerCase();
-      return t.includes(search);
-    }) : items;
-
-    if(!filtered.length) filtered = items;
-
-    list.innerHTML = '';
-    filtered.slice(0,8).forEach(function(item){
-      var title = (item.querySelector('title')||{textContent:'No title'}).textContent.replace(/\s*-\s*[^-]+$/, '').trim();
-      var desc = (item.querySelector('description')||{textContent:''}).textContent.replace(/<[^>]*>/g,'').substring(0,100);
-      var pubDate = (item.querySelector('pubDate')||{textContent:''}).textContent;
-      var card = document.createElement('div');
-      card.className = 'news-card';
-      card.innerHTML = '<div class="news-title">'+title+'</div><div class="news-src">'+(pubDate?pubDate.substring(0,16):'')+' — '+desc+'</div>';
-      card.onclick = function(){
-        document.querySelectorAll('.news-card').forEach(function(c){c.classList.remove('selected');});
-        card.classList.add('selected');
-        selectedArticle = {title:title, summary:desc};
-        document.getElementById('selectedNewsTitle').textContent = title;
-        document.getElementById('selectedNews').style.display = 'block';
+  fetch(S+'/rss?url='+encodeURIComponent(url))
+  .then(function(r){return r.text();})
+  .then(function(d){
+    var xml=new DOMParser().parseFromString(d,'text/xml');
+    var items=Array.from(xml.querySelectorAll('item')).slice(0,8);
+    if(!items.length){list.innerHTML='<div style="color:#ef4444;font-size:11px">No articles found. Try: bitcoin, crime, trump</div>';return;}
+    list.innerHTML='';
+    items.forEach(function(item){
+      var title=(item.querySelector('title')||{textContent:'No title'}).textContent.replace(/\s*-[^-]*$/,'').trim();
+      var desc=(item.querySelector('description')||{textContent:''}).textContent.replace(/<[^>]*>/g,'').substring(0,90);
+      var card=document.createElement('div');
+      card.className='nc';
+      card.innerHTML='<div class="nt">'+title+'</div><div class="ns">'+desc+'</div>';
+      card.onclick=function(){
+        document.querySelectorAll('.nc').forEach(function(c){c.classList.remove('sel');});
+        card.classList.add('sel');
+        selArt={title:title,summary:desc};
+        document.getElementById('selTitle').textContent=title;
+        document.getElementById('selNews').style.display='block';
       };
       list.appendChild(card);
     });
-  }).catch(function(e){
-    list.innerHTML = '<div style="color:#ef4444;font-size:11px">RSS Error: '+e.message+'<br>Make sure your Railway server is running.</div>';
-  });
+  }).catch(function(e){list.innerHTML='<div style="color:#ef4444;font-size:11px">Error: '+e.message+'</div>';});
 }
 
-// ── CONVERT NEWS TO SCRIPT VIA CLAUDE
-function convertNewsToScript(){
-  var claudeKey = document.getElementById('claudeKey').value.trim();
-  if(!claudeKey){alert('Enter your Anthropic API key first');return;}
-  if(!selectedArticle){alert('Select an article first');return;}
-
-  var status = document.getElementById('convertStatus');
-  status.style.display = 'block';
-  status.className = 'status loading';
-  status.textContent = 'Converting to documentary script...';
-
-  var prompt = 'Convert this news article into a cinematic documentary script in the style of Shady POV YouTube channel.\n\nRules:\n- Hook at the start\n- Break into scenes separated by ..\n- Each scene is 1-2 sentences max\n- Keep emotional and tense tone\n- 60-90 seconds total length\n- Use second person POV where possible\n- No timestamps needed\n\nNews Title: '+selectedArticle.title+'\nSummary: '+selectedArticle.summary+'\n\nReturn ONLY the script, no explanation.';
-
+function news2Script(){
+  var key=document.getElementById('aiKey').value.trim();
+  if(!key){alert('Enter Anthropic API key first');return;}
+  if(!selArt){alert('Select an article first');return;}
+  var st=document.getElementById('cvtSt');
+  st.style.display='block';st.className='st ld';st.textContent='Converting...';
   fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':claudeKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:'Convert this news into a cinematic documentary script.\nRules: Hook at start, scenes separated by .., 1-2 sentences per scene, emotional tone, 60-90 seconds total.\nNews: '+selArt.title+'\n'+selArt.summary+'\nReturn ONLY the script.'}]})
   }).then(function(r){return r.json();})
   .then(function(d){
-    var text = d.content&&d.content[0]&&d.content[0].text;
-    if(text){
-      document.getElementById('scriptInput').value = text;
-      status.textContent = 'Script generated! Scroll down to review and analyze.';
-      status.className = 'status ok';
-      updateCount();
-    } else {
-      status.textContent = 'Error: No response from Claude';
-      status.className = 'status error';
-    }
-  }).catch(function(e){
-    status.textContent = 'Error: '+e.message;
-    status.className = 'status error';
-  });
+    var t=d.content&&d.content[0]&&d.content[0].text;
+    if(t){document.getElementById('script').value=t;st.textContent='Done! Review script below.';st.className='st ok';updateCount();}
+    else{st.textContent='Error: No response';st.className='st err';}
+  }).catch(function(e){st.textContent='Error: '+e.message;st.className='st err';});
 }
 
-// ── SCENE PARSING
-function calcDur(text,type,pauses){
+function calcDur(text,type,dashes){
   var w=text.trim().split(/\s+/).filter(function(x){return x.length>0;}).length;
   var d=(w/150)*60;
   if(type==='tense')d*=0.75;
   if(type==='emotional')d*=1.25;
   if(type==='timestamp')return 4;
-  d+=pauses;
+  d+=dashes;
   return Math.max(3,Math.round(d));
 }
 
-function detectType(text){
-  var l=text.toLowerCase();
-  var hasDate=DATE_KW.some(function(k){return l.includes(k);})||/\d{4}/.test(text)||/\d{1,2}:\d{2}/.test(text);
-  if(hasDate&&text.length<100)return 'timestamp';
-  if(EVIDENCE_KW.some(function(k){return l.includes(k);}))return 'evidence';
-  if(TENSE_KW.some(function(k){return l.includes(k);}))return 'tense';
-  if(EMOTIONAL_KW.some(function(k){return l.includes(k);}))return 'emotional';
+function detectType(t){
+  var l=t.toLowerCase();
+  var hasDate=DATE.some(function(k){return l.includes(k);})||/\d{4}/.test(t)||/\d{1,2}:\d{2}/.test(t);
+  if(hasDate&&t.length<100)return 'timestamp';
+  if(EVID.some(function(k){return l.includes(k);}))return 'evidence';
+  if(TENSE.some(function(k){return l.includes(k);}))return 'tense';
+  if(EMOT.some(function(k){return l.includes(k);}))return 'emotional';
   return 'neutral';
 }
 
-function isAbstract(text){
-  return ABSTRACT_RE.some(function(p){return p.test(text.trim());})||
-    text.trim().split(' ').filter(function(w){return w.length>3;}).length<3;
-}
-
-// SUGGESTION 4: Smart visual query — not raw text
-function getVisualQuery(sc){
-  var l=sc.cleanText.toLowerCase();
-  if(l.includes('bank')||l.includes('financial')||l.includes('loan'))return 'bank financial building';
-  if(l.includes('bitcoin')||l.includes('crypto')||l.includes('dark web'))return 'computer screen hacker dark';
-  if(l.includes('internet')||l.includes('cyber')||l.includes('online'))return 'computer network digital';
-  if(l.includes('government')||l.includes('trump')||l.includes('president'))return 'government capitol building';
-  if(l.includes('stock')||l.includes('market')||l.includes('wall street'))return 'stock market trading';
+function getQuery(text,type,idx){
+  var l=text.toLowerCase();
+  if(l.includes('bitcoin')||l.includes('crypto'))return 'bitcoin cryptocurrency digital';
+  if(l.includes('dark web')||l.includes('silk road'))return 'computer screen hacker dark';
+  if(l.includes('bank')||l.includes('financial')||l.includes('money'))return 'bank building financial';
   if(l.includes('prison')||l.includes('jail')||l.includes('sentenced'))return 'prison exterior fence';
-  if(l.includes('court')||l.includes('judge')||l.includes('trial'))return 'courthouse justice';
-  if(l.includes('war')||l.includes('military')||l.includes('soldier'))return 'military soldiers';
-  if(l.includes('drug')||l.includes('cartel'))return 'dark alley night city';
-  if(l.includes('silk road')||l.includes('marketplace'))return 'dark web computer anonymous';
-  if(l.includes('library')||l.includes('book'))return 'library books study';
-  if(l.includes('fbi')||l.includes('cia')||l.includes('agent'))return 'federal agents investigation';
-  if(isAbstract(sc.cleanText))return FALLBACKS[sc.index % FALLBACKS.length];
-  // Use meaningful words from text
-  return sc.cleanText.split(' ').filter(function(w){return w.length>4;}).slice(0,3).join(' ')||FALLBACKS[sc.index%FALLBACKS.length];
+  if(l.includes('court')||l.includes('judge')||l.includes('verdict'))return 'courthouse justice';
+  if(l.includes('fbi')||l.includes('police')||l.includes('arrest'))return 'police federal agents';
+  if(l.includes('government')||l.includes('president'))return 'government capitol building';
+  if(l.includes('war')||l.includes('military'))return 'military soldiers dramatic';
+  if(l.includes('library'))return 'library interior books';
+  var words=text.split(' ').filter(function(w){return w.length>4;}).slice(0,3).join(' ');
+  return words||FALLBACKS[idx%FALLBACKS.length];
 }
 
 function parseScript(raw){
@@ -370,386 +288,304 @@ function parseScript(raw){
     var dashes=(t.match(/—/g)||[]).length;
     var type=detectType(clean);
     var dur=calcDur(clean,type,dashes);
-    var abstract=isAbstract(clean);
-    // SUGGESTION 4: Use visual query not raw text
-    var query=getVisualQuery({cleanText:clean,type:type,index:i});
-    return {index:i+1,cleanText:clean,type:type,dur:dur,query:query,abstract:abstract};
+    return{index:i+1,text:clean,type:type,dur:dur,query:getQuery(clean,type,i)};
   }).filter(Boolean);
 }
 
 function updateCount(){
-  var v=document.getElementById('scriptInput').value;
+  var v=document.getElementById('script').value;
   var c=v.split('..').filter(function(s){return s.trim().length>0;}).length;
-  document.getElementById('sceneCount').textContent=c+(c===1?' scene':' scenes')+' detected';
+  document.getElementById('scCount').textContent=c+(c===1?' scene':' scenes')+' detected';
 }
-document.getElementById('scriptInput').addEventListener('input',updateCount);
+document.getElementById('script').addEventListener('input',updateCount);
 
-// ── FETCH FUNCTIONS (1 attempt each — waterfall)
-function fetchPexels(query,key){
+function pexels(q,key){
   if(!key)return Promise.resolve(null);
-  return fetch('https://api.pexels.com/videos/search?query='+encodeURIComponent(query)+'&per_page=3&orientation=landscape',
-    {headers:{'Authorization':key}})
-  .then(function(r){return r.json();})
-  .then(function(d){
+  return fetch('https://api.pexels.com/videos/search?query='+encodeURIComponent(q)+'&per_page=3&orientation=landscape',{headers:{'Authorization':key}})
+  .then(function(r){return r.json();}).then(function(d){
     if(!d.videos||!d.videos.length)return null;
-    var v=d.videos[0];
-    var f=v.video_files&&(v.video_files.find(function(x){return x.quality==='hd';})||v.video_files[0]);
-    return f&&f.link?{url:f.link,source:'pexels',query:query}:null;
+    var v=d.videos[0];var f=v.video_files&&(v.video_files.find(function(x){return x.quality==='hd';})||v.video_files[0]);
+    return f&&f.link?{url:f.link,src:'pexels',q:q}:null;
   }).catch(function(){return null;});
 }
 
-function fetchPixabay(query,key){
+function pixabay(q,key){
   if(!key)return Promise.resolve(null);
-  return fetch('https://pixabay.com/api/videos/?key='+key+'&q='+encodeURIComponent(query)+'&per_page=3')
-  .then(function(r){return r.json();})
-  .then(function(d){
+  return fetch('https://pixabay.com/api/videos/?key='+key+'&q='+encodeURIComponent(q)+'&per_page=3')
+  .then(function(r){return r.json();}).then(function(d){
     if(!d.hits||!d.hits.length)return null;
-    var v=d.hits[0];
-    var f=v.videos&&(v.videos.large||v.videos.medium||v.videos.small);
-    return f&&f.url?{url:f.url,source:'pixabay',query:query}:null;
+    var v=d.hits[0];var f=v.videos&&(v.videos.large||v.videos.medium||v.videos.small);
+    return f&&f.url?{url:f.url,src:'pixabay',q:q}:null;
   }).catch(function(){return null;});
 }
 
-function fetchWikipedia(query){
-  var term=query.split(' ').slice(0,2).join('_');
-  return fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(term))
-  .then(function(r){return r.json();})
-  .then(function(d){
-    if(d.thumbnail&&d.thumbnail.source)return{source:'wikipedia',imageUrl:d.thumbnail.source,summary:d.extract?d.extract.substring(0,100):'',url:null,query:query};
-    if(d.extract)return{source:'wikipedia',imageUrl:null,summary:d.extract.substring(0,100),url:null,query:query};
+function wiki(q){
+  return fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(q.split(' ').slice(0,2).join('_')))
+  .then(function(r){return r.json();}).then(function(d){
+    if(d.thumbnail&&d.thumbnail.source)return{url:null,src:'wikipedia',img:d.thumbnail.source,summary:(d.extract||'').substring(0,100),q:q};
+    if(d.extract)return{url:null,src:'wikipedia',img:null,summary:d.extract.substring(0,100),q:q};
     return null;
   }).catch(function(){return null;});
 }
 
-function fetchGoogleNews(query){
-  var rss='https://news.google.com/rss/search?q='+encodeURIComponent(query)+'&hl=en-US&gl=US&ceid=US:en';
-  var proxy=SERVER+'/rss?url='+encodeURIComponent(rss);
-  return fetch(proxy).then(function(r){return r.text();})
-  .then(function(d){
+function gnews(q){
+  var url='https://news.google.com/rss/search?q='+encodeURIComponent(q)+'&hl=en-US&gl=US&ceid=US:en';
+  return fetch(S+'/rss?url='+encodeURIComponent(url))
+  .then(function(r){return r.text();}).then(function(d){
     var xml=new DOMParser().parseFromString(d,'text/xml');
-    var items=xml.querySelectorAll('item');
-    if(!items.length)return null;
+    var items=xml.querySelectorAll('item');if(!items.length)return null;
     var first=items[0];
     var title=(first.querySelector('title')||{textContent:''}).textContent;
-    var desc=(first.querySelector('description')||{textContent:''}).textContent.replace(/<[^>]*>/g,'').substring(0,120);
-    return{source:'googlenews',headline:title,summary:desc,url:null,overlay:title,query:query};
+    var desc=(first.querySelector('description')||{textContent:''}).textContent.replace(/<[^>]*>/g,'').substring(0,100);
+    return{url:null,src:'gnews',headline:title,summary:desc,overlay:title,q:q};
   }).catch(function(){return null;});
 }
 
-function fetchClaudeResearch(sc,key){
-  if(!key)return Promise.resolve(null);
-  var prompt='Documentary scene: "'+sc.cleanText+'"\nType: '+sc.type+'\n\nReturn JSON only:\n{"betterQuery":"3-5 word Pexels search query","overlay":"2 line evidence text if needed, else null"}';
-  return fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:150,messages:[{role:'user',content:prompt}]})
-  }).then(function(r){return r.json();})
-  .then(function(d){
-    var t=d.content&&d.content[0]&&d.content[0].text;
-    if(!t)return null;
-    try{var j=JSON.parse(t.replace(/```json|```/g,'').trim());return{source:'claude',betterQuery:j.betterQuery,overlay:j.overlay,url:null,query:sc.query};}
-    catch(e){return null;}
-  }).catch(function(){return null;});
-}
-
-// WATERFALL: Pexels → Pixabay → Wikipedia → Google News → Claude
-function searchScene(sc,pKey,pbKey,cKey){
-  if(sc.type==='timestamp')return Promise.resolve({source:'text',url:null});
-
-  var q=sc.query;
-
-  return fetchPexels(q,pKey).then(function(r){
-    if(r){log('Scene '+sc.index+': Pexels OK');return r;}
-    log('Scene '+sc.index+': Pexels miss, trying Pixabay...');
-
-    // Use unique fallback query for Pixabay to avoid repeats
-    var pbQ = sc.type==='evidence' ? q : FALLBACKS[sc.index % FALLBACKS.length];
-    return fetchPixabay(pbQ,pbKey).then(function(r2){
-      if(r2){log('Scene '+sc.index+': Pixabay OK');return r2;}
-      log('Scene '+sc.index+': Pixabay miss, trying Wikipedia...');
-
-      return fetchWikipedia(q).then(function(r3){
-        if(r3){log('Scene '+sc.index+': Wikipedia OK');return r3;}
-        log('Scene '+sc.index+': Wikipedia miss, trying Google News...');
-
-        return fetchGoogleNews(q).then(function(r4){
-          if(r4){log('Scene '+sc.index+': Google News OK');return r4;}
-          log('Scene '+sc.index+': All failed, asking Claude...');
-
-          return fetchClaudeResearch(sc,cKey).then(function(r5){
-            if(r5&&r5.betterQuery){
-              // One final Pexels try with Claude's better query
-              return fetchPexels(r5.betterQuery,pKey).then(function(r6){
-                return r6||r5||{source:'text',url:null};
-              });
-            }
-            return{source:'text',url:null};
-          });
+function searchScene(sc,px,pb){
+  if(sc.type==='timestamp')return Promise.resolve({src:'text',url:null});
+  return pexels(sc.query,px).then(function(r){
+    if(r)return r;
+    var fbQ=FALLBACKS[sc.index%FALLBACKS.length];
+    return pixabay(fbQ,pb).then(function(r2){
+      if(r2)return r2;
+      return wiki(sc.query).then(function(r3){
+        if(r3)return r3;
+        return gnews(sc.query).then(function(r4){
+          return r4||{src:'text',url:null};
         });
       });
     });
   });
 }
 
-// ── ANALYZE + FETCH
-function analyzeAndFetch(){
-  var raw=document.getElementById('scriptInput').value.trim();
+function analyze(){
+  var raw=document.getElementById('script').value.trim();
   if(!raw){alert('Paste your script first');return;}
-  var pKey=document.getElementById('pexelsKey').value.trim();
-  var pbKey=document.getElementById('pixabayKey').value.trim();
-  var cKey=document.getElementById('claudeKey').value.trim();
-  var p1Fill=document.getElementById('p1Fill');
-  var p1Status=document.getElementById('p1Status');
+  var px=document.getElementById('pxKey').value.trim();
+  var pb=document.getElementById('pbKey').value.trim();
 
-  p1Status.style.display='block';p1Status.className='status loading';
-  p1Status.textContent='Parsing...';
+  // FIX 5: Save keys
+  saveKey('pxKey');saveKey('pbKey');saveKey('aiKey');saveKey('elKey');
+
+  var p1f=document.getElementById('p1f');
+  var p1st=document.getElementById('p1st');
+  p1st.style.display='block';p1st.className='st ld';p1st.textContent='Parsing...';
   dbgLog=[];
 
-  scenes=parseScript(raw);footageData={};
+  scenes=parseScript(raw);ftData={};
 
-  if(!scenes.length){p1Status.textContent='No scenes. Use .. to separate.';p1Status.className='status error';return;}
-  log('Parsed '+scenes.length+' scenes');
+  if(!scenes.length){p1st.textContent='No scenes found. Use .. to separate.';p1st.className='st err';return;}
 
-  var list=document.getElementById('scenesList');
+  var list=document.getElementById('scList');
   list.innerHTML='';
   document.getElementById('scenesOut').style.display='block';
 
   var i=0;
   function next(){
     if(i>=scenes.length){
-      p1Fill.style.width='100%';
-      var counts={};
-      scenes.forEach(function(sc,idx){var ft=footageData[idx];if(ft)counts[ft.source]=(counts[ft.source]||0)+1;});
-      var noFootage=scenes.filter(function(sc,idx){return !footageData[idx]||!footageData[idx].url;}).length;
-
-      var badge=document.getElementById('valBadge');
-      if(noFootage===0){badge.textContent='All have footage';badge.style.cssText='background:rgba(34,197,94,0.2);color:#22c55e;border:1px solid rgba(34,197,94,0.3)';}
-      else{badge.textContent=noFootage+' text overlays';badge.style.cssText='background:rgba(245,158,11,0.2);color:#f59e0b;border:1px solid rgba(245,158,11,0.3)';}
-
-      var srcBar=document.getElementById('srcSummary');
-      srcBar.innerHTML=Object.keys(counts).map(function(k){
-        return '<span style="font-size:10px;font-family:monospace;padding:3px 8px;border-radius:3px;border:1px solid #e8ff00;color:#e8ff00">'+k+': '+counts[k]+'</span>';
-      }).join('');
-
-      p1Status.textContent='Done! '+scenes.length+' scenes processed.';p1Status.className='status ok';
-      buildVOSection();buildRenderSummary();
-      document.getElementById('narSection').style.display='block';
+      p1f.style.width='100%';
+      var counts={};var noFt=0;
+      scenes.forEach(function(sc,idx){var ft=ftData[idx];if(ft)counts[ft.src]=(counts[ft.src]||0)+1;if(!ft||!ft.url)noFt++;});
+      var badge=document.getElementById('vBadge');
+      badge.textContent=noFt===0?'All have footage':noFt+' text overlays';
+      badge.style.cssText=noFt===0?'background:rgba(34,197,94,0.2);color:#22c55e;border:1px solid rgba(34,197,94,0.3)':'background:rgba(245,158,11,0.2);color:#f59e0b;border:1px solid rgba(245,158,11,0.3)';
+      document.getElementById('srcSum').innerHTML=Object.keys(counts).map(function(k){return'<span style="font-size:10px;font-family:monospace;padding:2px 8px;border-radius:3px;border:1px solid #e8ff00;color:#e8ff00">'+k+':'+counts[k]+'</span>';}).join('');
+      p1st.textContent='Done! '+scenes.length+' scenes.';p1st.className='st ok';
+      buildVO();buildRSum();
+      document.getElementById('narSec').style.display='block';
       document.getElementById('renderSec').style.display='block';
       return;
     }
-
     var sc=scenes[i];
-    p1Fill.style.width=((i/scenes.length)*100)+'%';
-    p1Status.textContent='Scene '+(i+1)+'/'+scenes.length+(sc.abstract?' [abstract visual query]':'')+'...';
+    p1f.style.width=((i/scenes.length)*100)+'%';
+    p1st.textContent='Scene '+(i+1)+'/'+scenes.length+'...';
 
     var card=document.createElement('div');
-    card.className='sc';card.id='sc-'+i;
-    card.innerHTML=
-      '<div class="sn">SCENE '+String(i+1).padStart(2,'0')+'</div>'+
-      '<span class="badge '+sc.type+'">'+sc.type.toUpperCase()+'</span>'+
-      (sc.abstract?'<span class="badge abs">ABSTRACT</span>':'')+
-      '<div class="st">"'+sc.cleanText.substring(0,80)+(sc.cleanText.length>80?'...':'')+'"</div>'+
-      '<div class="sd">'+sc.dur+'s · visual query: "'+sc.query+'"</div>'+
-      '<div id="ft-'+i+'"><span style="color:#333;font-size:11px">Searching...</span></div>';
+    card.className='sc';card.id='c'+i;
+    card.innerHTML='<div class="sn">SCENE '+String(i+1).padStart(2,'0')+'</div>'+
+      '<span class="bdg '+sc.type+'">'+sc.type.toUpperCase()+'</span>'+
+      '<div class="stxt">"'+sc.text.substring(0,75)+(sc.text.length>75?'...':'')+'"</div>'+
+      '<div class="sdur">'+sc.dur+'s · query: "'+sc.query+'"</div>'+
+      '<div id="ft'+i+'"><span style="color:#333;font-size:11px">Searching...</span></div>';
     list.appendChild(card);
 
     var idx=i;
-    searchScene(sc,pKey,pbKey,cKey).then(function(result){
-      footageData[idx]=result||{source:'text',url:null};
-      var ft=footageData[idx];
-      var ftEl=document.getElementById('ft-'+idx);
-      var cardEl=document.getElementById('sc-'+idx);
-      if(ft.source==='pexels'||ft.source==='pixabay'){
-        if(ftEl)ftEl.innerHTML='<div class="ft-ok">'+ft.source.toUpperCase()+': "'+ft.query+'" found</div>';
-        if(cardEl)cardEl.classList.add('has-footage');
-      } else if(ft.source==='wikipedia'){
-        if(ftEl)ftEl.innerHTML='<div class="ft-warn">Wikipedia: '+(ft.imageUrl?'image + ':'')+'summary found</div>';
-      } else if(ft.source==='googlenews'){
-        if(ftEl)ftEl.innerHTML='<div class="ft-warn">Google News: "'+((ft.headline||'').substring(0,50))+'"</div>';
-      } else if(ft.source==='claude'){
-        if(ftEl)ftEl.innerHTML='<div class="ft-warn">Claude research: "'+ft.betterQuery+'"</div>';
-      } else {
-        if(ftEl)ftEl.innerHTML='<div class="ft-none">Text overlay (add Grok image manually)</div>';
-        if(cardEl)cardEl.classList.add('no-footage');
+    searchScene(sc,px,pb).then(function(r){
+      ftData[idx]=r||{src:'text',url:null};
+      var ft=ftData[idx];
+      var el=document.getElementById('ft'+idx);
+      var cd=document.getElementById('c'+idx);
+      if(ft.src==='pexels'||ft.src==='pixabay'){
+        if(el)el.innerHTML='<div class="ft-ok">'+ft.src+': "'+ft.q+'" found</div>';
+        if(cd)cd.classList.add('ok');
+      }else if(ft.src==='wikipedia'){
+        if(el)el.innerHTML='<div class="ft-w">Wikipedia: '+(ft.img?'image+':'')+'summary</div>';
+      }else if(ft.src==='gnews'){
+        if(el)el.innerHTML='<div class="ft-w">Google News: "'+((ft.headline||'').substring(0,40))+'"</div>';
+      }else{
+        if(el)el.innerHTML='<div class="ft-n">Text overlay</div>';
+        if(cd)cd.classList.add('no');
       }
-      i++;setTimeout(next,150);
+      log('S'+(idx+1)+': '+ft.src+(ft.url?' url=Y':' url=N'));
+      i++;setTimeout(next,100);
     });
   }
   next();
 }
 
-// ── VOICE
 function loadVoices(){
   var key=document.getElementById('elKey').value.trim();
   if(!key){alert('Enter ElevenLabs key');return;}
+  saveKey('elKey');
   fetch('https://api.elevenlabs.io/v1/voices',{headers:{'xi-api-key':key}})
   .then(function(r){return r.json();})
   .then(function(d){
-    var sel=document.getElementById('voiceSelect');sel.innerHTML='';
+    var sel=document.getElementById('voiceSel');sel.innerHTML='';
     (d.voices||[]).forEach(function(v){
       var o=document.createElement('option');o.value=v.voice_id;o.textContent=v.name;
       if(v.name.toLowerCase()==='adam')o.selected=true;
       sel.appendChild(o);
     });
-    document.getElementById('voStatus').textContent='Loaded '+(d.voices||[]).length+' voices';
-    document.getElementById('voStatus').className='status ok';
-  }).catch(function(e){
-    document.getElementById('voStatus').textContent='Error: '+e.message;
-    document.getElementById('voStatus').className='status error';
-  });
+    document.getElementById('voSt').textContent='Loaded '+(d.voices||[]).length+' voices';
+    document.getElementById('voSt').className='st ok';
+    localStorage.setItem('dk_voiceId', document.getElementById('voiceSel').value);
+  }).catch(function(e){document.getElementById('voSt').textContent='Error: '+e.message;document.getElementById('voSt').className='st err';});
 }
 
-function buildVOSection(){
+function buildVO(){
   var list=document.getElementById('voList');list.innerHTML='';
   scenes.forEach(function(sc,i){
-    var row=document.createElement('div');row.className='vr';row.id='vo-'+i;
-    row.innerHTML=
-      '<div class="vn">'+String(i+1).padStart(2,'0')+'</div>'+
+    var r=document.createElement('div');r.className='vr';r.id='vo'+i;
+    r.innerHTML='<div class="vn">'+String(i+1).padStart(2,'0')+'</div>'+
       '<div class="vi"><div class="vt">'+sc.type.toUpperCase()+' · '+sc.dur+'s</div>'+
-      '<div class="vtx">'+sc.cleanText.substring(0,55)+(sc.cleanText.length>55?'...':'')+'</div></div>'+
-      '<div class="va"><span class="vs" id="vs-'+i+'">PENDING</span>'+
-      '<button class="btn-sm" onclick="genVO('+i+')" id="vb-'+i+'">Gen</button></div>';
-    list.appendChild(row);
+      '<div class="vx">'+sc.text.substring(0,50)+(sc.text.length>50?'...':'')+'</div></div>'+
+      '<div class="va"><span class="vs" id="vs'+i+'">PENDING</span>'+
+      '<button class="btn-sm" onclick="genVO('+i+')" id="vb'+i+'">Gen</button></div>';
+    list.appendChild(r);
   });
 }
 
 function genVO(idx){
   var key=document.getElementById('elKey').value.trim();
-  var vid=document.getElementById('voiceSelect').value;
-  if(!key||!vid){alert('Enter API key and load voices');return;}
+  // FIX 5: Try localStorage if field empty
+  if(!key)key=localStorage.getItem('dk_elKey')||'';
+  var vid=document.getElementById('voiceSel').value||localStorage.getItem('dk_voiceId')||'';
+  if(!key||!vid){alert('Enter ElevenLabs key and load voices');return;}
   var sc=scenes[idx];if(!sc)return;
-  var vs=document.getElementById('vs-'+idx);
-  var va=document.querySelector('#vo-'+idx+' .va');
+  var vs=document.getElementById('vs'+idx);
+  var va=document.querySelector('#vo'+idx+' .va');
   if(vs){vs.textContent='GEN';vs.className='vs gen';}
-  var txt=sc.cleanText.replace(/\(.*?\)/g,'').replace(/—/g,'... ').trim();
+  var txt=sc.text.replace(/\(.*?\)/g,'').replace(/—/g,'... ').trim();
   fetch('https://api.elevenlabs.io/v1/text-to-speech/'+vid,{
     method:'POST',
     headers:{'xi-api-key':key,'Content-Type':'application/json','Accept':'audio/mpeg'},
     body:JSON.stringify({text:txt,model_id:'eleven_monolingual_v1',voice_settings:{stability:0.5,similarity_boost:0.75}})
-  }).then(function(r){if(!r.ok)throw new Error('API error '+r.status);return r.arrayBuffer();})
+  }).then(function(r){if(!r.ok)throw new Error('EL error '+r.status);return r.arrayBuffer();})
   .then(function(buf){
     var blob=new Blob([buf],{type:'audio/mpeg'});
     var url=URL.createObjectURL(blob);
-    audioBlobs[idx]={blob:blob,url:url,name:'scene-'+String(idx+1).padStart(2,'0')+'.mp3'};
-    if(va)va.innerHTML=
-      '<span class="vs done">DONE</span>'+
-      '<audio controls src="'+url+'" style="height:26px;max-width:130px"></audio>'+
-      '<button class="btn-sm" onclick="dlVO('+idx+')">MP3</button>'+
-      '<button class="btn-sm" onclick="genVO('+idx+')">Redo</button>';
-    if(Object.keys(audioBlobs).length===scenes.length)document.getElementById('dlAllVoBtn').style.display='inline-block';
-  }).catch(function(e){if(vs){vs.textContent='ERR';vs.className='vs err';}});
+    voData[idx]={blob:blob,url:url,name:'s'+String(idx+1).padStart(2,'0')+'.mp3'};
+    if(va)va.innerHTML='<span class="vs done">DONE</span><audio controls src="'+url+'"></audio><button class="btn-sm" onclick="dlVO('+idx+')">MP3</button><button class="btn-sm" onclick="genVO('+idx+')">Redo</button>';
+    if(Object.keys(voData).length===scenes.length)document.getElementById('dlAllBtn').style.display='inline-block';
+    buildRSum();
+  }).catch(function(e){if(vs){vs.textContent='ERR';vs.className='vs err';}console.error(e);});
 }
 
-function generateAllVO(){
+function genAllVO(){
   var key=document.getElementById('elKey').value.trim();
-  var vid=document.getElementById('voiceSelect').value;
-  if(!key||!vid){alert('Enter API key and load voices');return;}
-  var btn=document.getElementById('genAllVoBtn');btn.disabled=true;
+  if(!key)key=localStorage.getItem('dk_elKey')||'';
+  var vid=document.getElementById('voiceSel').value;
+  if(!key||!vid){alert('Enter key and load voices');return;}
+  var btn=document.getElementById('genAllBtn');btn.disabled=true;
   var i=0;
   function nx(){if(i>=scenes.length){btn.disabled=false;return;}genVO(i++);setTimeout(nx,900);}
   nx();
 }
 
-function dlVO(idx){var ab=audioBlobs[idx];if(!ab)return;var a=document.createElement('a');a.href=ab.url;a.download=ab.name;a.click();}
-function downloadAllVO(){Object.keys(audioBlobs).forEach(function(idx,i){setTimeout(function(){dlVO(idx);},i*400);});}
+function dlVO(idx){var ab=voData[idx];if(!ab)return;var a=document.createElement('a');a.href=ab.url;a.download=ab.name;a.click();}
+function dlAllVO(){Object.keys(voData).forEach(function(idx,i){setTimeout(function(){dlVO(idx);},i*400);});}
 
-// ── RENDER SUMMARY
-function buildRenderSummary(){
+function buildRSum(){
   var total=scenes.reduce(function(a,s){return a+s.dur;},0);
-  var wv=Object.values(footageData).filter(function(r){return r&&r.url;}).length;
-  document.getElementById('renderSum').innerHTML=
+  var wv=Object.values(ftData).filter(function(r){return r&&r.url;}).length;
+  document.getElementById('rSum').innerHTML=
     'Scenes: <strong>'+scenes.length+'</strong> &nbsp; Duration: <strong style="color:#e8ff00">'+
-    Math.floor(total/60)+'m '+(total%60)+'s</strong> &nbsp; With video: <strong>'+wv+'</strong> &nbsp; With narration: <strong>'+Object.keys(audioBlobs).length+'</strong>';
+    Math.floor(total/60)+'m '+(total%60)+'s</strong> &nbsp; Video clips: <strong>'+wv+
+    '</strong> &nbsp; Narrations: <strong>'+Object.keys(voData).length+'</strong>';
 }
 
-// ── RENDER
 function startRender(){
   var title=document.getElementById('docTitle').value.trim()||'Documentary';
-  var renderBtn=document.getElementById('renderBtn');
-  var renderFill=document.getElementById('renderFill');
-  var renderStatus=document.getElementById('renderStatus');
-  var renderResult=document.getElementById('renderResult');
+  var rBtn=document.getElementById('rBtn');
+  var rFill=document.getElementById('rFill');
+  var rSt=document.getElementById('rSt');
+  var rRes=document.getElementById('rResult');
 
-  renderBtn.disabled=true;
-  renderStatus.style.display='block';renderStatus.className='status loading';
-  renderStatus.textContent='Sending to server...';
-  renderResult.innerHTML='';renderFill.style.width='10%';
+  rBtn.disabled=true;
+  rSt.style.display='block';rSt.className='st ld';rSt.textContent='Sending to server...';
+  rRes.innerHTML='';rFill.style.width='5%';
 
   var payload={
     jobId:'job_'+Date.now(),title:title,
     scenes:scenes.map(function(sc,i){
-      var ft=footageData[i]||{};
-      var ab=audioBlobs[i];
+      var ft=ftData[i]||{};
+      var vo=voData[i];
       return{
-        order:sc.index,type:sc.type,duration:sc.dur,
+        order:i+1,  // FIX 4: Always sequential
+        type:sc.type,
+        duration:sc.dur,  // FIX 2: Exact duration
         footageUrl:ft.url||null,
-        imageUrl:ft.imageUrl||null,
-        timestampText:sc.cleanText,narrationText:sc.cleanText,
-        narrationUrl:ab?ab.url:null,
+        imageUrl:ft.img||null,
+        timestampText:sc.text,  // FIX 7: Pass timestamp text
+        narrationText:sc.text,
+        narrationUrl:vo?vo.url:null,
         overlay:ft.overlay||ft.headline||ft.summary||null
       };
     })
   };
 
-  log('Render: '+scenes.length+' scenes, '+Object.keys(audioBlobs).length+' narrations');
+  log('Render: '+scenes.length+' scenes, '+Object.keys(voData).length+' narrations');
 
-  var prog=10;
+  var prog=5;
   var iv=setInterval(function(){
-    prog=Math.min(prog+0.8,92);
-    renderFill.style.width=prog+'%';
-    renderStatus.textContent='Server rendering... '+Math.round(prog)+'% (large videos may take 2-3 min)';
-  },3000);
+    prog=Math.min(prog+0.6,90);
+    rFill.style.width=prog+'%';
+    rSt.textContent='Rendering... '+Math.round(prog)+'%';
+  },2500);
 
-  fetch(SERVER+'/render',{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(payload)
-  }).then(function(res){
+  fetch(S+'/render',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+  .then(function(res){
     clearInterval(iv);
     if(!res.ok)return res.json().then(function(e){throw new Error(e.error||'Server error '+res.status);});
-    renderFill.style.width='100%';
-    renderStatus.textContent='Done! Downloading...';renderStatus.className='status ok';
+    rFill.style.width='100%';rSt.textContent='Done! Downloading...';rSt.className='st ok';
     return res.blob();
-  }).then(function(blob){
-    renderedBlob=blob;
-    var mb=(blob.size/1024/1024).toFixed(1);
-    renderResult.innerHTML='<div class="rb">'+
-      '<div style="font-size:20px;color:#22c55e;font-weight:700;margin-bottom:8px">DOCUMENTARY READY</div>'+
-      '<div style="font-size:12px;color:#888;margin-bottom:12px">'+scenes.length+' scenes · '+mb+' MB</div>'+
+  }).then(function(b){
+    blob=b;
+    var mb=(b.size/1024/1024).toFixed(1);
+    rRes.innerHTML='<div class="rb"><div style="font-size:18px;color:#22c55e;font-weight:700;margin-bottom:6px">DOCUMENTARY READY</div>'+
+      '<div style="font-size:12px;color:#888;margin-bottom:10px">'+scenes.length+' scenes · '+mb+' MB</div>'+
       '<button class="btn" onclick="dlVideo()">Download .mp4</button></div>';
-    renderBtn.disabled=false;
-    log('Complete: '+mb+'MB');
+    rBtn.disabled=false;
   }).catch(function(e){
     clearInterval(iv);
-    renderStatus.textContent='Error: '+e.message;renderStatus.className='status error';
-    renderBtn.disabled=false;log('Error: '+e.message);
+    rSt.textContent='Error: '+e.message;rSt.className='st err';rBtn.disabled=false;
   });
 }
 
 function dlVideo(){
-  if(!renderedBlob)return;
-  var url=URL.createObjectURL(renderedBlob);
+  if(!blob)return;
+  var url=URL.createObjectURL(blob);
   var a=document.createElement('a');a.href=url;a.download='documentary_'+Date.now()+'.mp4';a.click();
   URL.revokeObjectURL(url);
 }
 
+// Init
 checkServer();
+loadKeys();  // FIX 5: Load saved keys on page load
 
-// Restore saved API keys from localStorage
-(function restoreKeys(){
-  var keys = ['pexelsKey','pixabayKey','claudeKey','elKey'];
-  keys.forEach(function(id){
-    var saved = localStorage.getItem('docai_'+id);
-    var el = document.getElementById(id);
-    if(saved && el && !el.value) el.value = saved;
-  });
-})();
-
-// Save API keys whenever they change
-['pexelsKey','pixabayKey','claudeKey','elKey'].forEach(function(id){
-  var el = document.getElementById(id);
-  if(el) el.addEventListener('change', function(){
-    localStorage.setItem('docai_'+id, this.value);
-  });
+// Also save voice selection
+document.getElementById('voiceSel').addEventListener('change',function(){
+  localStorage.setItem('dk_voiceId',this.value);
 });
 </script>
 </body>
