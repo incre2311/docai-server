@@ -466,11 +466,9 @@ function buildVO(){
 }
 
 function genVO(idx){
-  var key=document.getElementById('elKey').value.trim();
-  // FIX 5: Try localStorage if field empty
-  if(!key)key=localStorage.getItem('dk_elKey')||'';
+  var key=document.getElementById('elKey').value.trim()||localStorage.getItem('dk_elKey')||'';
   var vid=document.getElementById('voiceSel').value||localStorage.getItem('dk_voiceId')||'';
-  if(!key||!vid){alert('Enter ElevenLabs key and load voices');return;}
+  if(!key||!vid){return;}
   var sc=scenes[idx];if(!sc)return;
   var vs=document.getElementById('vs'+idx);
   var va=document.querySelector('#vo'+idx+' .va');
