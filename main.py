@@ -32,7 +32,7 @@ def download_clip(url, path):
     for attempt in range(2):
         try:
             print(f"Download attempt {attempt+1}: {url[:50]}", flush=True)
-            r = requests.get(url, stream=True, timeout=30, headers=headers)
+            r = requests.get(url, stream=True, timeout=15, headers=headers)
             if r.status_code == 200:
                 with open(path, 'wb') as f:
                     for chunk in r.iter_content(chunk_size=8192):
@@ -136,7 +136,7 @@ def download_background_music(output_path, duration):
     ]
     for url in music_urls:
         try:
-            r = requests.get(url, timeout=20)
+            r = requests.get(url, timeout=10)
             if r.status_code == 200 and len(r.content) > 10000:
                 raw_path = output_path.replace('.aac', '_raw.mp3')
                 with open(raw_path, 'wb') as f:
@@ -280,7 +280,11 @@ def render():
         if os.path.exists(intro_path):
             all_clips.append(intro_path)
 
-        # SCENES
+        # SCENES — process max 25 to avoid timeout
+        if len(scenes) > 25:
+            print(f"Limiting to 25 scenes to avoid timeout (total: {len(scenes)})", flush=True)
+            scenes = scenes[:25]
+
         for i, scene in enumerate(scenes):
             scene_type = scene.get('type', 'neutral')
             duration = max(3, min(scene.get('duration', 5), 20))
